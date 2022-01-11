@@ -1,0 +1,3 @@
+[submodule "reading/os01"]
+	path = reading/os01
+	url = https://github.com/tuhdo/os01
