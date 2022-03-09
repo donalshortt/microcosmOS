@@ -1,0 +1,8 @@
+iso/
+kernel.iso
+microcosmOS/boot.d
+microcosmOS/boot.o
+microcosmOS/kernel
+microcosmOS/kernel.d
+microcosmOS/kernel.iso
+microcosmOS/kernel.o
