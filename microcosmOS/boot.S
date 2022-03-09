@@ -118,7 +118,7 @@ _start64:
         movw %ax, %gs
         movw %ax, %ss
 
-        call Kernel_Main
+        call kernel_main
 
         // Should never reach here
         cli

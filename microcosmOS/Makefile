@@ -1,10 +1,10 @@
-CC=gcc
+CC=g++
 SHARED_FLAGS = -fno-builtin -O2 -nostdinc -nostdlib -ffreestanding -g -Wall -Wextra \
                -Werror -I. -MMD -mno-red-zone -mcmodel=kernel -fno-pie
 CFLAGS = $(SHARED_FLAGS)
 ASFLAGS = $(SHARED_FLAGS) -Wa,--divide
 
-OBJS := boot.o
+OBJS = boot.o
 OBJS += kernel.o
 
 DFILES = $(patsubst %.o,%.d,$(OBJS))
