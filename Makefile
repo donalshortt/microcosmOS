@@ -23,6 +23,9 @@ kernel:
 qemu: $(ISO_FILE)
 	qemu-system-x86_64 -cdrom $(ISO_FILE) -serial stdio -m 1024M
 
+debug: $(ISO_FILE)
+	qemu-system-x86_64 -s -S -cdrom $(ISO_FILE) -serial stdio -m 1024M
+
 clean:
 	make -C microcosmOS clean
 	rm -rf iso

@@ -14,7 +14,9 @@ static void PrintString(const char *str)
 extern "C" void
 kernel_main(void)
 {
-  PrintString("Oh hello there");
+  PrintString("It is I, Albert Pennysworth");
+
+  PrintString("Great heavens!");
 
   while(1);
 }
