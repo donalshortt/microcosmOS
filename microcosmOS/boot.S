@@ -118,6 +118,8 @@ _start64:
         movw %ax, %gs
         movw %ax, %ss
 
+        movl %ebx, %esp
+
         call kernel_main
 
         // Should never reach here

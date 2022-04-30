@@ -4,19 +4,18 @@
 
 static void PrintString(const char *str)
 {
-  unsigned char *video = ((unsigned char *)VIDEO_START);
-  while(*str != '\0') {
-    *(video++) = *str++;
-    *(video++) = VGA_RED;
-  }
+    unsigned char *video = ((unsigned char *)VIDEO_START);
+    while(*str != '\0') {
+        *(video++) = *str++;
+        *(video++) = VGA_RED;
+    }
 }
 
 extern "C" void
-kernel_main(void)
+kernel_main(void* boot_info)
 {
-  PrintString("It is I, Albert Pennysworth");
-
-  PrintString("Great heavens!");
-
-  while(1);
+    PrintString("It is I, Albert Pennysworth");
+    PrintString("Great heavens!");
+    
+    while(1);
 }
