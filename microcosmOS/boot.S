@@ -2,7 +2,7 @@
 #include "arch/x86_64/mmu.h"
 #include "kernel.h"
 #include "sizes.h"
-#include "multiboot2.h"
+#include "includes/multiboot2.h"
 #include "arch/x86_64/msr.h"
 
 .SET HEADER_LENGTH, header_end - header_start
@@ -118,7 +118,7 @@ _start64:
         movw %ax, %gs
         movw %ax, %ss
 
-        movl %ebx, %esp
+        movl %ebx, %edi
 
         call kernel_main
 
