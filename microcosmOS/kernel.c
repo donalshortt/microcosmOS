@@ -3,11 +3,12 @@
 #define VGA_RED 4
 
 #include "includes/multiboot2.h"
+#include "includes/mem_manage.h"
 
-static void print_string(const char *str, int pos, int colour)
+static void print_string(const char *str, int line, int colour)
 {
     unsigned char *video = ((unsigned char *)VIDEO_START);
-    video += pos * 160;
+    video += line * 160;
 
     while(*str != '\0') {
         *(video++) = *str++;
@@ -55,6 +56,8 @@ unsigned long get_total_mem(unsigned long boot_info_addr)
 
 int kernel_main(unsigned long boot_info_addr)
 {
+    
+    //TODO: Remove this magic number
     if (boot_info_addr & 7) {
         print_string("Incorrect alignment for multiboot info", 0, VGA_RED);
         goto panic;
@@ -69,5 +72,5 @@ int kernel_main(unsigned long boot_info_addr)
     while(1);
     
     panic:
-    return 0;
+    return 1;
 }
