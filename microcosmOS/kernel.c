@@ -25,6 +25,7 @@ static void print_name(void)
     print_string("/_/ /_/ /_/_/\\___/_/   \\____/\\___/\\____/____/_/ /_/ /_/\\____//____/  ", 4, VGA_LIGHT_GRAY);
 }
 
+//TODO: This might be a bit too close to the implementation on the multiboot speciication examples
 unsigned long get_total_mem(unsigned long boot_info_addr)
 {
     unsigned long long total_mem = 0;
