@@ -43,7 +43,9 @@
 // PHYS MEM MANAGEMENT
 
 #define BLOCK_SIZE 4096
-#define KB_TO_PHYS_BLOCKS(x) ((x * 1024) / BLOCK_SIZE)
+#define BLOCKS_PER_QWORD 64
+#define B_TO_BLOCKS(x) (x / BLOCK_SIZE)
+
 
 //#define 
 
