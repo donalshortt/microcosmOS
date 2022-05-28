@@ -50,6 +50,7 @@ gdt_ptr:
 _start:
         movl $tmp_stack + BOOT_STACK_SIZE, %esp
 
+        /* Set two entries in the PML4 table, each pointing to a pdpt */
         movl $low_pdpt, %eax
         or $(MMU_PRESENT | MMU_WRITABLE), %eax
         movl %eax, pml4 + (PML4_ADDR_TO_ENTRY_INDEX(OS_PHYS_START) * PML4_ENTRY_SIZE)
@@ -58,6 +59,7 @@ _start:
         or $(MMU_PRESENT | MMU_WRITABLE), %eax
         movl %eax, pml4 + (PML4_ADDR_TO_ENTRY_INDEX(OS_VIRT_START) * PML4_ENTRY_SIZE)
 
+        /* Set an entry for each PDPT... for the physical and virtual*/
         movl $low_page_directory_table, %eax
         or $(MMU_PRESENT | MMU_WRITABLE), %eax
         movl %eax, low_pdpt + (PDPT_ADDR_TO_ENTRY_INDEX(OS_PHYS_START) * PDPT_ENTRY_SIZE)
@@ -68,6 +70,7 @@ _start:
 
         mov $0, %ecx
 
+        /* TODO: Here im using 2mb pages for the kernel -> should I not be using 4kb? */
         movl $_kernel_physical_end, %esi
         shrl $TWO_MEGABYTES_SHIFT, %esi
         addl $1, %esi
@@ -75,14 +78,17 @@ _start:
 page_directory_table_loop:
         movl $TWO_MEGABYTES, %eax
         mul %ecx
+        /* No. of pages calculated ^^^*/
         or $(MMU_PRESENT | MMU_WRITABLE | MMU_PDE_TWO_MB), %eax
         movl %eax, low_page_directory_table(, %ecx, PAGE_DIRECTORY_ENTRY_SIZE)
         movl %eax, high_page_directory_table(, %ecx, PAGE_DIRECTORY_ENTRY_SIZE)
+        /* Store the two entries in the low and high page tables respectively (low = phys, high = virt) */
 
         inc %ecx
         cmp %esi, %ecx
         jne page_directory_table_loop  // if not equal redo loop
 
+        /* Point cr3 to pml4 */
         movl $pml4, %eax
         movl %eax, %cr3
 

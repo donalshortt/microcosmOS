@@ -47,6 +47,8 @@ unsigned long get_available_mem(unsigned long boot_info_addr)
     return total_mem;
 }
 
+
+
 void init_pmm(struct PMM* pmm, unsigned long pmmap_addr, unsigned long boot_info_addr)
 {
     pmm->mem_size = get_available_mem(boot_info_addr);
@@ -63,3 +65,31 @@ void init_pmm(struct PMM* pmm, unsigned long pmmap_addr, unsigned long boot_info
     kmemset(pmm->pmmap, 0x2A, pmm->pmmap_size);
 }
 
+void bit_set(unsigned long *bitmap, int bit) {
+    bitmap[bit / 64] |= (1 << (bit % 64));
+}
+
+
+void bit_unset(unsigned long *bitmap, int bit) {
+    bitmap[bit / 64] &= ~(1 << (bit % 64));
+}
+
+void pmm_init_space(struct PMM* pmm, unsigned long base_addr, unsigned int mem_size)                                        
+{                                                                                                                           
+    unsigned int no_blocks = mem_size / BLOCK_SIZE;                                                                         
+    unsigned int alignment = base_addr / BLOCK_SIZE;                                                                        
+
+    for (int i = 0; i < no_blocks; i++) {
+        bit_unset(pmm->pmmap, alignment++);
+        no_blocks--;
+    }
+
+    bit_set(pmm->pmmap, 0);
+}
+
+void test(struct PMM* pmm)
+{
+    bit_set(pmm->pmmap, 1);
+    bit_unset(pmm->pmmap, 2);
+    bit_set(pmm->pmmap,3);
+}

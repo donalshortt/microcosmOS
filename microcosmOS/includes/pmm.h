@@ -1,14 +1,6 @@
 #ifndef __PMM_H__
 #define __PMM_H__
 
-struct Block
-{
-    Block* next;
-    Block* prev;
-    bool allocated;
-    int size;
-};
-
 struct PMM
 {
     long mem_size;
@@ -20,7 +12,8 @@ struct PMM
 
 typedef struct PMM PMM;
 
-unsigned long get_available_total_mem(unsigned long boot_info_addr);
+unsigned long get_available_mem(unsigned long boot_info_addr);
 void init_pmm(struct PMM* pmm, unsigned long pmmap_addr, unsigned long boot_info_addr);
+void test(struct PMM* pmm);
 
 #endif

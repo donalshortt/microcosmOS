@@ -2,6 +2,7 @@ ENTRY(_start)
 
 SECTIONS
 {
+    /* TODO: Why 4M? */
   . = 4M;
   _kernel_physical_start = .;
 
@@ -26,6 +27,9 @@ SECTIONS
 
   . = ALIGN(0x1000);
   _boot_end = .;
+  /*+=*/
+  _pmm = .; /*TODO: is this really a good idea? */
+  . = ALIGN(0x1000);
 
   . += 0xFFFFFFFF80000000;
   _kernel_virtual_start = .;

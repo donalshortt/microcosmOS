@@ -3,6 +3,7 @@
 #define VGA_RED 4
 
 #include "includes/multiboot2.h"
+#include "includes/pmm.h"
 
 static void print_string(const char *str, int line, int colour)
 {
@@ -40,7 +41,14 @@ int kernel_main(unsigned long boot_info_addr)
 
     print_string("Wow", 9, VGA_LIGHT_GRAY);
 
-    get_total_mem(boot_info_addr);
+    // PMM
+
+    extern char *_pmm;
+    unsigned long k_p_end = (unsigned long) &_pmm;
+    struct PMM* pmm_state;
+    //init_pmm(pmm_state, (unsigned long) &_kernel_physical_end, boot_info_addr);
+
+    //test(pmm_state);
 
     while(1);
     
