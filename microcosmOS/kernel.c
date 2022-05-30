@@ -43,12 +43,11 @@ int kernel_main(unsigned long boot_info_addr)
 
     // PMM
 
-    extern char *_pmm;
-    unsigned long k_p_end = (unsigned long) &_pmm;
+    extern char* _kernel_physical_end;
     struct PMM* pmm_state;
-    //init_pmm(pmm_state, (unsigned long) &_kernel_physical_end, boot_info_addr);
+    init_pmm(pmm_state, (unsigned long) &_kernel_physical_end, boot_info_addr);
 
-    //test(pmm_state);
+    test(pmm_state);
 
     while(1);
     

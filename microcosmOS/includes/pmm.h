@@ -3,7 +3,7 @@
 
 struct PMM
 {
-    long mem_size;
+    unsigned long mem_size;
     int used_blocks;
     int max_blocks;
     unsigned long* pmmap;

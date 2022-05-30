@@ -46,7 +46,6 @@
 #define BLOCKS_PER_QWORD 64
 #define B_TO_BLOCKS(x) (x / BLOCK_SIZE)
 
-
 //#define 
 
 #endif

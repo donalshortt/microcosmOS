@@ -27,10 +27,11 @@ SECTIONS
 
   . = ALIGN(0x1000);
   _boot_end = .;
-  /*+=*/
-  _pmm = .; /*TODO: is this really a good idea? */
+  /* . += 0x8000; */
+  _pmm = .; /* TODO: is this really a good idea? */
   . = ALIGN(0x1000);
 
+  /* Gives the OS 2GB */
   . += 0xFFFFFFFF80000000;
   _kernel_virtual_start = .;
   .text : AT(_boot_end)
@@ -62,6 +63,9 @@ SECTIONS
   }
 
   _kernel_virtual_end = .;
+  _kernel_size = _kernel_virtual_end - _kernel_virtual_start;
+  
+  /* ASSERT(_kernel_size < 0x300000, "Kernel size exceeds 3MB"); */
 
   _kernel_physical_end = (LOADADDR (.bss) + SIZEOF (.bss) + 0xFFF) & 0xFFFFFFFFFFFFF000;
 }

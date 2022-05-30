@@ -51,6 +51,10 @@ unsigned long get_available_mem(unsigned long boot_info_addr)
 
 void init_pmm(struct PMM* pmm, unsigned long pmmap_addr, unsigned long boot_info_addr)
 {
+    unsigned long total_mem = get_available_mem(boot_info_addr);
+
+    total_mem = total_mem + 0;
+
     pmm->mem_size = get_available_mem(boot_info_addr);
     pmm->max_blocks = B_TO_BLOCKS(pmm->mem_size);
     pmm->used_blocks = pmm->max_blocks;
@@ -79,7 +83,7 @@ void pmm_init_space(struct PMM* pmm, unsigned long base_addr, unsigned int mem_s
     unsigned int no_blocks = mem_size / BLOCK_SIZE;                                                                         
     unsigned int alignment = base_addr / BLOCK_SIZE;                                                                        
 
-    for (int i = 0; i < no_blocks; i++) {
+    for (unsigned int i = 0; i < no_blocks; i++) {
         bit_unset(pmm->pmmap, alignment++);
         no_blocks--;
     }
