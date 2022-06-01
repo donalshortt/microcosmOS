@@ -12,8 +12,9 @@ struct PMM
 
 typedef struct PMM PMM;
 
-unsigned long get_available_mem(unsigned long boot_info_addr);
-void init_pmm(struct PMM* pmm, unsigned long pmmap_addr, unsigned long boot_info_addr);
-void test(struct PMM* pmm);
+void setup_pmm(struct PMM* pmm, unsigned long boot_info_addr);
+
+void* pmm_alloc_block(struct PMM* pmm);
+void pmm_dealloc_block(void* ptr, struct PMM* pmm);
 
 #endif

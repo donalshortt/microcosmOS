@@ -1,6 +1,6 @@
 CC=gcc
 SHARED_FLAGS = -fno-builtin -O0 -nostdinc -nostdlib -ffreestanding -ggdb -Wall -Wextra \
-               -Werror -I. -MMD -mno-red-zone -fno-pie
+               -Werror -I. -MMD -mno-red-zone -fno-pie -mcmodel=large
 CFLAGS = $(SHARED_FLAGS)
 ASFLAGS = $(SHARED_FLAGS) -Wa,--divide
 
@@ -12,7 +12,7 @@ all: kernel
 
 kernel.o: kernel.c
 	$(CC) -fno-builtin -O2 -nostdinc -nostdlib -ffreestanding -ggdb -Wall -Wextra \
-	-c -O0 -z -no-pie -mcmodel=large kernel.c
+	-c -O0 -z -no-pie kernel.c -mcmodel=large
 
 
 kernel: $(OBJS) kernel.o kernel.ld Makefile

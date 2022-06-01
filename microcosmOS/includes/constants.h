@@ -1,6 +1,11 @@
 #ifndef CONSTANTS_H_
 #define CONSTANTS_H_
 
+// TYPES
+// TODO: Add the types!
+
+#define NULL 0
+
 // BOOT STACK
 
 #define BOOT_STACK_SIZE 0x4000
@@ -46,7 +51,8 @@
 #define BLOCKS_PER_QWORD 64
 #define B_TO_BLOCKS(x) (x / BLOCK_SIZE)
 
-//#define 
+#define SPACE_DEINIT 1
+#define SPACE_INIT 0
 
 #endif
 

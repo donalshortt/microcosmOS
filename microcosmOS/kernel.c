@@ -42,13 +42,15 @@ int kernel_main(unsigned long boot_info_addr)
     print_string("Wow", 9, VGA_LIGHT_GRAY);
 
     // PMM
-
-    extern char* _kernel_physical_end;
     struct PMM* pmm_state;
-    init_pmm(pmm_state, (unsigned long) &_kernel_physical_end, boot_info_addr);
 
-    test(pmm_state);
+    setup_pmm(pmm_state, boot_info_addr);
 
+    void* test = pmm_alloc_block(pmm_state);
+    void* test1 = pmm_alloc_block(pmm_state);
+    void* test2 = pmm_alloc_block(pmm_state);
+    void* test3 = pmm_alloc_block(pmm_state);
+    
     while(1);
     
     panic:

@@ -49,7 +49,7 @@ unsigned long get_available_mem(unsigned long boot_info_addr)
 
 
 
-void init_pmm(struct PMM* pmm, unsigned long pmmap_addr, unsigned long boot_info_addr)
+void pmm_init(struct PMM* pmm, unsigned long pmmap_addr, unsigned long boot_info_addr)
 {
     unsigned long total_mem = get_available_mem(boot_info_addr);
 
@@ -69,31 +69,144 @@ void init_pmm(struct PMM* pmm, unsigned long pmmap_addr, unsigned long boot_info
     kmemset(pmm->pmmap, 0x2A, pmm->pmmap_size);
 }
 
-void bit_set(unsigned long *bitmap, int bit) {
+// Sets the bit -> The memory at the index is in use
+
+static inline void bit_set(unsigned long* bitmap, int bit)
+{
     bitmap[bit / 64] |= (1 << (bit % 64));
 }
 
+// Unsets the bit -> The memory at the index in not in use
+// TODO: Test if I can make the bitset 0 and remove the complement
 
-void bit_unset(unsigned long *bitmap, int bit) {
+static inline void bit_unset(unsigned long* bitmap, int bit)
+{
     bitmap[bit / 64] &= ~(1 << (bit % 64));
 }
 
-void pmm_init_space(struct PMM* pmm, unsigned long base_addr, unsigned int mem_size)                                        
+static inline char bit_test(unsigned long* bitmap, int bit)
+{
+    return bitmap[bit / 64] & (1 << (bit % 64));
+}
+
+//  Init: makes address space ready for allocation and vice versa 
+
+void pmm_init_deinit_space(struct PMM* pmm, unsigned long base_addr, unsigned long mem_size, char i_or_d)
 {                                                                                                                           
     unsigned int no_blocks = mem_size / BLOCK_SIZE;                                                                         
     unsigned int alignment = base_addr / BLOCK_SIZE;                                                                        
 
-    for (unsigned int i = 0; i < no_blocks; i++) {
-        bit_unset(pmm->pmmap, alignment++);
-        no_blocks--;
+    if (i_or_d == SPACE_INIT) {
+        for (unsigned int i = 0; i < no_blocks; i++) {
+            bit_unset(pmm->pmmap, alignment++);
+            pmm->used_blocks--;
+        }
+    } else {
+        for (unsigned int i = 0; i < no_blocks; i++) {
+            bit_set(pmm->pmmap, alignment++);
+            pmm->used_blocks++;
+        }
     }
 
-    bit_set(pmm->pmmap, 0);
+    if (i_or_d == SPACE_INIT)
+        bit_set(pmm->pmmap, 0);
 }
 
-void test(struct PMM* pmm)
+// TODO: This is copied from get_total_mem -> try to reduce code duplication
+
+void pmm_init_available_mem(struct PMM* pmm, unsigned long boot_info_addr)
 {
-    bit_set(pmm->pmmap, 1);
-    bit_unset(pmm->pmmap, 2);
-    bit_set(pmm->pmmap,3);
+    struct multiboot_tag* mb_tag;
+    
+    for (mb_tag = (struct multiboot_tag *) (boot_info_addr + 8);
+            mb_tag->type != MULTIBOOT_TAG_TYPE_END;
+            mb_tag = (struct multiboot_tag *) ((multiboot_uint8_t *) mb_tag 
+                + ((mb_tag->size + 7) & ~7)))
+    {
+        if (mb_tag->type == MULTIBOOT_TAG_TYPE_MMAP) {
+            multiboot_memory_map_t *mmap;
+
+            for (mmap = ((struct multiboot_tag_mmap *) mb_tag)->entries;
+                    (multiboot_uint8_t *) mmap 
+                        < (multiboot_uint8_t *) mb_tag + mb_tag->size;
+                    mmap = (multiboot_memory_map_t *) ((unsigned long) mmap 
+                        + ((struct multiboot_tag_mmap *) mb_tag)->entry_size))
+            {
+                if (((struct multiboot_mmap_entry *) mmap)->type == MULTIBOOT_MEMORY_AVAILABLE) {
+                    pmm_init_deinit_space(pmm, mmap->addr, mmap->len, SPACE_INIT);                    
+                }
+            }
+        }
+    }
+}
+
+// Deinits the space associated with the kernel boot, kernel proper and pmmap
+
+void pmm_deinit_used_spaces(struct PMM* pmm)
+{
+    extern char* _kernel_physical_start;
+    extern char* _kernel_size;
+    extern char* _pmm_start;
+
+    pmm_init_deinit_space(pmm, (unsigned long) &_kernel_physical_start, (unsigned long) &_kernel_size, SPACE_DEINIT);
+    pmm_init_deinit_space(pmm, (unsigned long) &_pmm_start, pmm->pmmap_size, SPACE_DEINIT);
+}
+
+int get_first_free_block(struct PMM* pmm)
+{
+    long extra_bits = pmm->pmmap_size % 64;
+
+    for (long i = 0; i < (pmm->pmmap_size / 64); i++) {
+        for (long j = 0; i < 64; j++) {
+                if (!(pmm->pmmap[i] & (1 << j)))
+                    return (i * 64) + j;
+        }
+    }
+
+    if (extra_bits) {
+        for (int i = 0; i < extra_bits; i++) {
+            if (!(pmm->pmmap[pmm->pmmap_size / 64] & (1 << i)))
+                return ((pmm->pmmap_size / 64) * 64) + i;
+        }
+    }
+        
+    return -1;
+}
+
+void* pmm_alloc_block(struct PMM* pmm)
+{
+    if (pmm->max_blocks - pmm->used_blocks <= 0) {
+        /* TODO: ERROR no mem */
+        return NULL;
+    }
+
+    long index = get_first_free_block(pmm);    
+
+    bit_set(pmm->pmmap, index);
+
+    pmm->used_blocks++;
+
+    return (void*) (index * BLOCK_SIZE);
+}
+
+void pmm_dealloc_block(void* ptr, struct PMM* pmm)
+{
+    if (ptr == NULL) {
+        // TODO: ERROR null ptr
+        return;
+    }
+
+    long index = (unsigned long) ptr / BLOCK_SIZE;
+    bit_unset(pmm->pmmap, index);
+
+    pmm->used_blocks++;
+}
+
+void setup_pmm(struct PMM* pmm, unsigned long boot_info_addr)
+{
+    extern char* _pmm_start;
+    pmm_init(pmm, (unsigned long) &_pmm_start, boot_info_addr);
+    
+    pmm_init_available_mem(pmm, boot_info_addr);
+    pmm_deinit_used_spaces(pmm);
 }
