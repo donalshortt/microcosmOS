@@ -54,6 +54,8 @@
 #define SPACE_DEINIT 1
 #define SPACE_INIT 0
 
+// VIRT MEM MANAGEMENT 
+
 #endif
 
 
