@@ -11,6 +11,7 @@ struct PMM
 };
 
 typedef struct PMM PMM;
+struct PMM* pmm_state;
 
 void setup_pmm(struct PMM* pmm, unsigned long boot_info_addr);
 

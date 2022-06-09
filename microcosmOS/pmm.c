@@ -18,7 +18,7 @@ void* kmemset(void* addr, int set, int len)
     return addr;
 }
 
-//TODO: This might be a bit too close to the implementation on the multiboot speciication examples
+// WARNING: This might be a bit too close to the implementation on the multiboot speciication examples
 unsigned long get_available_mem(unsigned long boot_info_addr)
 {
     unsigned long long total_mem = 0;
