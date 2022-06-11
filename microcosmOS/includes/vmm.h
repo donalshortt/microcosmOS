@@ -19,10 +19,10 @@
 #define PAGE_ADDR      0xFFFFFFFFFFF000
 
 //TODO: Change to binary?
-#define PT_GET_INDEX(x)   (((x) >> 12) & 0x3ff)
-#define PD_GET_INDEX(x)   (((x) >> 21) & 0x3ff)
-#define PDPT_GET_INDEX(x) (((x) >> 30) & 0x3ff)
-#define PML4_GET_INDEX(x) (((x) >> 39) & 0x3ff)
+#define PT_GET_INDEX(x)   (((x) >> 12) & 0x1ff)
+#define PD_GET_INDEX(x)   (((x) >> 21) & 0x1ff)
+#define PDPT_GET_INDEX(x) (((x) >> 30) & 0x1ff)
+#define PML4_GET_INDEX(x) (((x) >> 39) & 0x1ff)
 
 struct PT 
 {
@@ -44,7 +44,7 @@ struct PML4
     pte entries[ENTRIES_PER_PML4];
 };
 
-struct PML4* CURRENT_PML4 = 0;
+//struct PML4* CURRENT_PML4 = 0;
 
 void pe_set_flag(pte* pte, uint64_t mask);
 void pe_del_flag(pte* pte, uint64_t mask);
@@ -58,7 +58,7 @@ pte* vmm_lookup_pde(struct PD* pd, vaddr vaddr);
 pte* vmm_lookup_pdpte(struct PDPT* pdpt, vaddr vaddr);
 pte* vmm_lookup_pml4e(struct PML4* pml4, vaddr vaddr);
 
-int vmm_switch_pml4(PML4* pml4);
+int vmm_switch_pml5(struct PML4* pml4);
 
 void vmm_remove_tlbe(vaddr vaddr);
 

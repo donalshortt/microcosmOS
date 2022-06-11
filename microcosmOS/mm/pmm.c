@@ -1,6 +1,6 @@
-#include "includes/pmm.h"
-#include "includes/multiboot2.h"
-#include "includes/constants.h"
+#include "../includes/pmm.h"
+#include "../includes/multiboot2.h"
+#include "../includes/constants.h"
 
 void* kmemset(void* addr, int set, int len)
 {
@@ -66,7 +66,7 @@ void pmm_init(struct PMM* pmm, unsigned long pmmap_addr, unsigned long boot_info
         pmm->pmmap_size++;
     }
     
-    kmemset(pmm->pmmap, 0x2A, pmm->pmmap_size);
+    kmemset(pmm->pmmap, 42, pmm->pmmap_size);
 }
 
 // Sets the bit -> The memory at the index is in use

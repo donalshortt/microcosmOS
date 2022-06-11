@@ -1,11 +1,14 @@
-#include "includes/vmm.h"
-#include "includes/pmm.h"
+#include "../includes/vmm.h"
+#include "../includes/pmm.h"
 
 inline void pe_set_flag(pte* pte, uint64_t flag) { *pte |= flag; };
 inline void pe_del_flag(pte* pte, uint64_t flag) { *pte &= ~flag; };
 inline void pe_set_addr(pte* pte, uint64_t addr) { *pte = (*pte & PAGE_ADDR) | addr; };
 
 //TODO: Standardise return codes!
+
+//TODO: Remove this shit
+struct PMM* pmm_state;
 
 int vmm_alloc_page(pte* pte)
 {
@@ -50,7 +53,6 @@ inline pte* vmm_lookup_pte(struct PT* pt, vaddr vaddr)
     return &pt->entries[ PT_GET_INDEX(vaddr) ];
 }
 
-// WARNING: I dont see how this is correct
 inline pde* vmm_lookup_pde(struct PD* pd, vaddr vaddr)
 {
     if(!pd) {
@@ -61,13 +63,16 @@ inline pde* vmm_lookup_pde(struct PD* pd, vaddr vaddr)
     return &pd->entries[ PD_GET_INDEX(vaddr) ];
 }
 
-void vmm_set_CR3(uint64_t pml4)
+__attribute__((unused)) void vmm_set_CR3(uint64_t pml4)
 {
     __asm__ ( "movq [pml4], %rax" );
     __asm__ ( "movq %rax, %cr3" );
 }
 
-int vmm_switch_pml4(struct PML4* pml4)
+//TODO: Remove this shit
+uint64_t CURRENT_PML4;
+
+__attribute__((unused)) int vmm_switch_pml4(struct PML4* pml4)
 {
     if(!pml4) {
         //TODO: Error

@@ -10,8 +10,7 @@ struct PMM
     int pmmap_size;
 };
 
-typedef struct PMM PMM;
-struct PMM* pmm_state;
+//typedef struct PMM PMM;
 
 void setup_pmm(struct PMM* pmm, unsigned long boot_info_addr);
 

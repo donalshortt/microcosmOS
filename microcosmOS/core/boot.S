@@ -1,8 +1,8 @@
-#include "arch/x86_64/gdt.h"
-#include "arch/x86_64/mmu.h"
-#include "sizes.h"
-#include "includes/multiboot2.h"
-#include "includes/constants.h"
+#include "../includes/gdt.h"
+#include "../includes/mmu.h"
+#include "../includes/sizes.h"
+#include "../includes/multiboot2.h"
+#include "../includes/constants.h"
 
 .SET HEADER_LENGTH, header_end - header_start
 .SET CHECKSUM, -(MULTIBOOT2_HEADER_MAGIC + MULTIBOOT_ARCHITECTURE_I386 + HEADER_LENGTH)
