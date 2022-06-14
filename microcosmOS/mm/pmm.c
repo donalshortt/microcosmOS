@@ -1,6 +1,7 @@
 #include "../includes/pmm.h"
 #include "../includes/multiboot2.h"
 #include "../includes/constants.h"
+#include "../includes/types.h"
 
 void* kmemset(void* addr, int set, int len)
 {
@@ -61,7 +62,7 @@ void pmm_init(struct PMM* pmm, unsigned long pmmap_addr, unsigned long boot_info
     pmm->pmmap = (unsigned long*) pmmap_addr;
     pmm->pmmap_size = pmm->max_blocks / BLOCKS_PER_QWORD; // number of bits in a ulong is 64, so how many of these there are
     
-    // if there the no. of blocks is not divisible by 64, we will have some at end end so these must be accounted for
+    // If the no. of blocks is not divisible by 64, we will have some at end end so these must be accounted for
     if ((pmm->max_blocks % BLOCKS_PER_QWORD) != 0) {
         pmm->pmmap_size++;
     }
@@ -154,7 +155,7 @@ void pmm_deinit_used_spaces(struct PMM* pmm)
 
 int get_first_free_block(struct PMM* pmm)
 {
-    long extra_bits = pmm->pmmap_size % 64;
+    uint64_t extra_bits = pmm->pmmap_size % 64;
 
     for (long i = 0; i < (pmm->pmmap_size / 64); i++) {
         for (long j = 0; i < 64; j++) {

@@ -69,13 +69,10 @@ clean()
     cd ../
 }
 
-move_to_build()
-{
-    cd microcosmOS 
-
-    mv *.d *.o build/
-
-    cd ../
+move_to_build_and_remove_dfiles()
+{ 
+    mv microcosmOS/*.o build/
+    rm microcosmOS/*.d 
 }
 
 debug()
@@ -84,7 +81,7 @@ debug()
     compile_debug
     make_iso
 
-    #move_to_build
+    move_to_build_and_remove_dfiles
 
     qemu-system-x86_64 -s -S -cdrom $ISO -serial stdio -m $MEM
 }
@@ -95,7 +92,7 @@ qemu()
     compile
     make_iso
 
-    #move_to_build
+    move_to_build_and_remove_dfiles
 
     qemu-system-x86_64 -cdrom $ISO -serial stdio -m $MEM
 }
