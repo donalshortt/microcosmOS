@@ -1,23 +1,14 @@
 #include "../includes/vmm.h"
 #include "../includes/pmm.h"
 
-inline void pe_set_flag(pte* pte, uint64_t flag) { *pte |= flag; };
-inline void pe_del_flag(pte* pte, uint64_t flag) { *pte &= ~flag; };
-inline void pe_set_addr(pte* pte, uint64_t addr) { *pte = (*pte & PAGE_ADDR) | addr; };
+inline void pe_set_flag(pe* pe, uint64_t flag) { *pe |= flag; };
+inline void pe_del_flag(pe* pe, uint64_t flag) { *pe &= ~flag; };
+inline void pe_set_addr(pe* pe, uint64_t addr) { *pe = (*pe & PAGE_ADDR) | addr; };
 
 //TODO: Standardise return codes!
-
-//TODO: Remove this shit
-struct PMM* pmm_state;
-
 int vmm_alloc_page(pte* pte)
 {
-    if(!pmm_state) {
-        //TODO: Error
-        return 1;
-    }
-
-    void* page_addr = pmm_alloc_block(pmm_state);
+    void* page_addr = pmm_alloc_block();
 
     if(!page_addr) {
         //TODO: Error
@@ -25,45 +16,26 @@ int vmm_alloc_page(pte* pte)
     } 
 
     pe_set_flag(pte, PAGE_PRESENT);
+    pe_set_flag(pte, PAGE_WRITEABLE);
     pe_set_addr(pte, (uint64_t)page_addr);
 
     return 0;
 }
 
-void vmm_dealloc_page(pte* pte)
+void vmm_dealloc_page(pe* pe)
 {
-    void* addr = (void*)(*pte & PAGE_ADDR);
+    void* addr = (void*)(*pe & PAGE_ADDR);
 
     if (!addr) {
         //TODO: Error
         return;
     }
 
-    pmm_dealloc_block(addr, pmm_state);
-    pe_del_flag(pte, PAGE_PRESENT);
+    pmm_dealloc_block(addr);
+    pe_del_flag(pe, PAGE_PRESENT);
 }
 
-inline pte* vmm_lookup_pte(struct PT* pt, vaddr vaddr)
-{
-    if(!pt) {
-        //TODO: Error
-        return 0;
-    }
-
-    return &pt->entries[ PT_GET_INDEX(vaddr) ];
-}
-
-inline pde* vmm_lookup_pde(struct PD* pd, vaddr vaddr)
-{
-    if(!pd) {
-        //TODO: Error
-        return 0;
-    }
-    
-    return &pd->entries[ PD_GET_INDEX(vaddr) ];
-}
-
-__attribute__((unused)) void vmm_set_CR3(uint64_t pml4)
+/*__attribute__((unused)) void vmm_set_CR3(uint64_t pml4)
 {
     __asm__ ( "movq [pml4], %rax" );
     __asm__ ( "movq %rax, %cr3" );
@@ -81,22 +53,62 @@ __attribute__((unused)) int vmm_switch_pml4(struct PML4* pml4)
 
     CURRENT_PML4 = pml4;
     vmm_set_CR3((uint64_t)pml4);
+}*/
+
+
+void* get_current_pml4()
+{
+    void* rv;
+    __asm__ __volatile__(
+        "mov %%cr3, %0"
+        : "=r"(rv)
+    );
+    return rv;
 }
 
-// Sets up a pte for a virtual address
-
+// Sets up an entry for a virtual address
 void vmm_map_page(void* virt, void* phys)
-{
-    struct PML4* pml4 = CURRENT_PML4;
-    pml4e* pml4e = &pml4->entries[ PML4_GET_INDEX( (uint64_t) virt) ];
-    
-    struct PDPT* pdpt = (struct PDPT* )pml4e;
-    pdpte* pdpte = &pdpt->entries[ PDPT_GET_INDEX( (uint64_t) virt) ];
-                                
-    struct PD* pd = (struct PD* )pdpte;
-    pde* pde = &pd->entries[ PD_GET_INDEX( (uint64_t) virt ) ];
+{   
+    struct PML4* pml4 = (struct PML4*)get_current_pml4();
 
+    uint64_t pml4e_i = PML4_GET_INDEX((uint64_t)virt);
+    uint64_t pdpte_i = PDPT_GET_INDEX((uint64_t)virt);
+    uint64_t pde_i   = PD_GET_INDEX((uint64_t)virt);
+
+    struct PDPT* pdpt = 0;
+    struct PD* pd = 0;
+    struct PT* pt = 0;
+
+    if ((pml4->entries[pml4e_i] & PAGE_PRESENT) != PAGE_PRESENT) {
+        pdpt = (struct PDPT*) pmm_alloc_block();
+        kmemset(pdpt, 0, PDPT_SIZE);
         
+        pml4e* pml4e = &pml4->entries[pml4e_i];
+        pe_set_flag(pml4e, PAGE_PRESENT);
+        pe_set_flag(pml4e, PAGE_WRITEABLE);
+        pe_set_addr(pml4e, (uint64_t)pdpt);
+    } else {
+        pdpt = (struct PDPT*)&pml4->entries[pml4e_i];
+    }
 
+    if ((pdpt->entries[pdpte_i] & PAGE_PRESENT) != PAGE_PRESENT) {
+        pd = (struct PD*) pmm_alloc_block();
+        kmemset(pd, 0, PD_SIZE);
+        
+        pdpte* pdpte = &pdpt->entries[pdpte_i];
+        pe_set_flag(pdpte, PAGE_PRESENT);
+        pe_set_flag(pdpte, PAGE_WRITEABLE);
+        pe_set_addr(pdpte, (uint64_t)pd);
+    } else {
+        pd = (struct PD*)&pdpt->entries[pdpte_i];
+    }
+    
+    pt = (struct PT*) pmm_alloc_block();
+    kmemset(pt, 0, PT_SIZE);
+    
+    pte* pte = &pt->entries[pde_i];
+    pe_set_flag(pte, PAGE_PRESENT);
+    pe_set_flag(pte, PAGE_WRITEABLE);
+    pe_set_addr(pte, (uint64_t)phys);
 }
 

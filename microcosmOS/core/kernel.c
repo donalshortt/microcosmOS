@@ -17,9 +17,7 @@ int kernel_main(unsigned long boot_info_addr)
 
     // PMM
 
-    struct PMM* pmm_state;
-
-    setup_pmm(pmm_state, boot_info_addr);
+    setup_pmm(boot_info_addr);
  
     print_string("Wow", 9, VGA_LIGHT_GRAY);
 

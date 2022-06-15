@@ -30,12 +30,12 @@ compile_debug()
 {
     cd microcosmOS
 
-    $CC $SHARED_FLAGS -O0 -ggdb -c kernel.o core/kernel.c
-    $CC $SHARED_FLAGS -O0 -ggdb -c boot.o core/boot.S
-    $CC $SHARED_FLAGS -O0 -ggdb -c pmm.o mm/pmm.c
-    $CC $SHARED_FLAGS -O0 -ggdb -c vmm.o mm/vmm.c
-    $CC $SHARED_FLAGS -O0 -ggdb -c mm.o mm/mm.c
-    $CC $SHARED_FLAGS -O0 -ggdb -c front.o front/front.c
+    $CC $SHARED_FLAGS -O0 -ggdb -c -o kernel.o core/kernel.c
+    $CC $SHARED_FLAGS -O0 -ggdb -c -o boot.o core/boot.S
+    $CC $SHARED_FLAGS -O0 -ggdb -c -o pmm.o mm/pmm.c
+    $CC $SHARED_FLAGS -O0 -ggdb -c -o vmm.o mm/vmm.c
+    $CC $SHARED_FLAGS -O0 -ggdb -c -o mm.o mm/mm.c
+    $CC $SHARED_FLAGS -O0 -ggdb -c -o front.o front/front.c
 
     $CC $SHARED_FLAGS -O0 -ggdb -z -W1,--build-id=none -T core/kernel.ld -o kernel $OBJECTS
     
@@ -46,12 +46,12 @@ compile()
 {
     cd microcosmOS
 
-    $CC $SHARED_FLAGS -O2 -c kernel.o core/kernel.c
-    $CC $SHARED_FLAGS -O2 -c boot.o core/boot.S
-    $CC $SHARED_FLAGS -O2 -c pmm.o mm/pmm.c
-    $CC $SHARED_FLAGS -O2 -c vmm.o mm/vmm.c
-    $CC $SHARED_FLAGS -O2 -c mm.o mm/mm.c
-    $CC $SHARED_FLAGS -O2 -c front.o front/front.c
+    $CC $SHARED_FLAGS -O2 -c -o kernel.o core/kernel.c
+    $CC $SHARED_FLAGS -O2 -c -o boot.o core/boot.S
+    $CC $SHARED_FLAGS -O2 -c -o pmm.o mm/pmm.c
+    $CC $SHARED_FLAGS -O2 -c -o vmm.o mm/vmm.c
+    $CC $SHARED_FLAGS -O2 -c -o mm.o mm/mm.c
+    $CC $SHARED_FLAGS -O2 -c -o front.o front/front.c
 
     $CC $SHARED_FLAGS -O2 -z -W1,--build-id=none -T core/kernel.ld -o kernel $OBJECTS
     

@@ -8,6 +8,11 @@
 #define ENTRIES_PER_PDPT 512
 #define ENTRIES_PER_PML4 512
 
+#define PML4_SIZE 4096
+#define PDPT_SIZE 4096
+#define PD_SIZE   4096
+#define PT_SIZE   4096
+
 //#define PAGE_PRESENT    0b/**/00000000/**/00000000/**/00000000/**/00000000/**/00000000/**/00000000/**/00000000/**/00000001
 //#define PAGE_WRITEABLE  0b/**/00000000/**/00000000/**/00000000/**/00000000/**/00000000/**/00000000/**/00000000/**/00000010
 //#define PAGE_MODE       0b/**/00000000/**/00000000/**/00000000/**/00000000/**/00000000/**/00000000/**/00000000/**/00000100
@@ -19,29 +24,29 @@
 #define PAGE_ADDR      0xFFFFFFFFFFF000
 
 //TODO: Change to binary?
-#define PT_GET_INDEX(x)   (((x) >> 12) & 0x1ff)
-#define PD_GET_INDEX(x)   (((x) >> 21) & 0x1ff)
-#define PDPT_GET_INDEX(x) (((x) >> 30) & 0x1ff)
 #define PML4_GET_INDEX(x) (((x) >> 39) & 0x1ff)
+#define PDPT_GET_INDEX(x) (((x) >> 30) & 0x1ff)
+#define PD_GET_INDEX(x)   (((x) >> 21) & 0x1ff)
+#define PT_GET_INDEX(x)   (((x) >> 12) & 0x1ff)
 
-struct PT 
+struct PML4
 {
-    pte entries[ENTRIES_PER_PT];
-};
-
-struct PD
-{
-    pte entries[ENTRIES_PER_PD];
+    pml4e entries[ENTRIES_PER_PML4];
 };
 
 struct PDPT
 {
-    pte entries[ENTRIES_PER_PDPT];
+    pdpte entries[ENTRIES_PER_PDPT];
 };
 
-struct PML4
+struct PD
 {
-    pte entries[ENTRIES_PER_PML4];
+    pde entries[ENTRIES_PER_PD];
+};
+
+struct PT 
+{
+    pte entries[ENTRIES_PER_PT];
 };
 
 //struct PML4* CURRENT_PML4 = 0;
