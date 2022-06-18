@@ -69,7 +69,7 @@ void pmm_init(unsigned long pmmap_addr, unsigned long boot_info_addr)
         pmm_state->pmmap_size++;
     }
     
-    kmemset(pmm_state->pmmap, 42, pmm_state->pmmap_size);
+    kmemset(pmm_state->pmmap, 0, pmm_state->pmmap_size);
 }
 
 // Sets the bit -> The memory at the index is in use

@@ -119,6 +119,7 @@ page_directory_table_loop:
 .type _start64, @function
 _start64:
         movw $0, %ax
+        // TODO: Check if necessary
         movw %ax, %ds
         movw %ax, %es
         movw %ax, %fs
