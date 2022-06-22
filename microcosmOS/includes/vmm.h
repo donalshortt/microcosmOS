@@ -51,9 +51,9 @@ struct PT
 
 //struct PML4* CURRENT_PML4 = 0;
 
-void pe_set_flag(pte* pte, uint64_t mask);
-void pe_del_flag(pte* pte, uint64_t mask);
-void pe_set_addr(pte* pte, uint64_t addr);
+void pe_set_flag(pe* pe, uint64_t mask);
+void pe_del_flag(pe* pe, uint64_t mask);
+void pe_set_addr(pe* pe, uint64_t addr);
 
 int vmm_alloc_page(pte* pte);
 void vmm_dealloc_page(pte* pte);

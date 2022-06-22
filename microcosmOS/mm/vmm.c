@@ -71,24 +71,26 @@ void vmm_map_page(void* virt, void* phys)
 {   
     struct PML4* pml4 = (struct PML4*)get_current_pml4();
 
-    uint64_t pml4e_i = PML4_GET_INDEX((uint64_t)virt);
+    uint64_t pml4_i  = PML4_GET_INDEX((uint64_t)virt);
     uint64_t pdpte_i = PDPT_GET_INDEX((uint64_t)virt);
     uint64_t pde_i   = PD_GET_INDEX((uint64_t)virt);
+    uint64_t pte_i   = PT_GET_INDEX((uint64_t)virt);
 
     struct PDPT* pdpt = 0;
     struct PD* pd = 0;
     struct PT* pt = 0;
 
-    if ((pml4->entries[pml4e_i] & PAGE_PRESENT) != PAGE_PRESENT) {
+    if ((pml4->entries[pml4_i] & PAGE_PRESENT) != PAGE_PRESENT) {
         pdpt = (struct PDPT*) pmm_alloc_block();
         kmemset(pdpt, 0, PDPT_SIZE);
         
-        pml4e* pml4e = &pml4->entries[pml4e_i];
+        pml4e* pml4e = &pml4->entries[pml4_i];
+
         pe_set_flag(pml4e, PAGE_PRESENT);
         pe_set_flag(pml4e, PAGE_WRITEABLE);
         pe_set_addr(pml4e, (uint64_t)pdpt);
     } else {
-        pdpt = (struct PDPT*)&pml4->entries[pml4e_i];
+        pdpt = (struct PDPT*)&pml4->entries[pml4_i];
     }
 
     if ((pdpt->entries[pdpte_i] & PAGE_PRESENT) != PAGE_PRESENT) {
@@ -103,12 +105,22 @@ void vmm_map_page(void* virt, void* phys)
         pd = (struct PD*)&pdpt->entries[pdpte_i];
     }
     
-    pt = (struct PT*) pmm_alloc_block();
-    kmemset(pt, 0, PT_SIZE);
-    
-    pte* pte = &pt->entries[pde_i];
+    if ((pdpt->entries[pde_i] & PAGE_PRESENT) != PAGE_PRESENT) {
+        pt = (struct PT*) pmm_alloc_block();
+        kmemset(pt, 0, PT_SIZE);
+        
+        pte* pte = &pt->entries[pde_i];
+        pe_set_flag(pte, PAGE_PRESENT);
+        pe_set_flag(pte, PAGE_WRITEABLE);
+        pe_set_addr(pte, (uint64_t)pt);
+    } else {
+        pt = (struct PT*)&pd->entries[pde_i];
+    }
+
+    pte* pte = &pt->entries[pte_i];
+
     pe_set_flag(pte, PAGE_PRESENT);
     pe_set_flag(pte, PAGE_WRITEABLE);
-    pe_set_addr(pte, (uint64_t)phys);
+    pe_set_addr(pte,(uint64_t)phys);
 }
 

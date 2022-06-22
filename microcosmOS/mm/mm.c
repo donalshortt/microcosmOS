@@ -2,9 +2,6 @@
 #include "../includes/vmm.h"
 #include "../includes/types.h"
 
-//TODO: Remove this shit
-//struct PMM* pmm_state;
-
 void* kmalloc(int size)
 {
     int no_blocks = 0;
@@ -16,10 +13,10 @@ void* kmalloc(int size)
     }
 
     // Check if there is enough memory available (first fit?)
-    if (size == 1) {
+    if (no_blocks == 1) {
         void* phys_alloced = pmm_alloc_block();
     } else {
-
+    
     }
 
     return 0;

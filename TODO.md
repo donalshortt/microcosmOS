@@ -1,15 +1,13 @@
-PMM
--> Bitmap
-VMM
--> Linked list?
+1 : Check that the mapping for virtual really works
+--> Could do this with gdb
+--> I.E: Allocate a block with PMM, then see if entries are made in the vmm
 
-Move src files into src
+2 : Implement the malloc/free function
 
----
-Find out if the location at the end of kernel is a good place for it;
--> Are we even getting an address?
--> Is there anything there currently?
+3 : Implement instruction timing framework
 
-Figure out why im getting the truncated error if the above doesn't work
+4 : Make a bullet point draft 
+
+OPTIONAL : Implement userspace processes
 
 
