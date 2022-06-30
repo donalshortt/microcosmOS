@@ -3,7 +3,10 @@
 
 inline void pe_set_flag(pe* pe, uint64_t flag) { *pe |= flag; };
 inline void pe_del_flag(pe* pe, uint64_t flag) { *pe &= ~flag; };
-inline void pe_set_addr(pe* pe, uint64_t addr) { *pe = (*pe & PAGE_ADDR) | addr; };
+inline void pe_set_addr(pe* pe, uint64_t addr) { 
+    *pe |= PAGE_ADDR; 
+    *pe &= addr; 
+};
 
 //TODO: Standardise return codes!
 int vmm_alloc_page(pte* pte)
@@ -35,7 +38,7 @@ void vmm_dealloc_page(pe* pe)
     pe_del_flag(pe, PAGE_PRESENT);
 }
 
-/*__attribute__((unused)) void vmm_set_CR3(uint64_t pml4)
+__attribute__((unused)) void vmm_set_CR3(uint64_t pml4)
 {
     __asm__ ( "movq [pml4], %rax" );
     __asm__ ( "movq %rax, %cr3" );
@@ -53,7 +56,7 @@ __attribute__((unused)) int vmm_switch_pml4(struct PML4* pml4)
 
     CURRENT_PML4 = pml4;
     vmm_set_CR3((uint64_t)pml4);
-}*/
+}
 
 
 void* get_current_pml4()
