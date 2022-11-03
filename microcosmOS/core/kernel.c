@@ -15,7 +15,6 @@ int kernel_main(unsigned long boot_info_addr)
 
     print_name();
 
-
     // PMM
 
     setup_pmm(boot_info_addr);
