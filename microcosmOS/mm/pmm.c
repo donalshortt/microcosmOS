@@ -155,7 +155,7 @@ void pmm_deinit_used_spaces()
     pmm_init_deinit_space((unsigned long) &_pmm_start, pmm_state->pmmap_size, SPACE_DEINIT);
 }
 
-int get_first_free_block()
+long get_first_free_block()
 {
     int extra_bits = pmm_state->pmmap_size % 64;
 

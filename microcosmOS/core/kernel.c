@@ -22,7 +22,7 @@ int kernel_main(unsigned long boot_info_addr)
     void* virt = (void*)0xFFFFFF0000000000;
     void* phys = pmm_alloc_block();
 
-    vmm_map_page(virt,phys);
+    vmm_map_page(virt, phys);
 
     print_string("Wow", 9, VGA_LIGHT_GRAY);
 
