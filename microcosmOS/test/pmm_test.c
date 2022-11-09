@@ -7,7 +7,22 @@
 
 int pmm_run_tests()
 {
-	if (alloc_block() == -1) { fail("alloc_block"); }
+	if (alloc_block() == -1) { 
+		fail(PMM_ALLOC_BLOCK);
+		return -1;
+	}
+
+	if (alloc_and_free_block() == -1) {
+		fail(PMM_ALLOC_AND_FREE_BLOCK);
+		return -1;
+	}
+
+	if (alloc_freed_block() == -1) {
+		fail(PMM_ALLOC_FREED_BLOCK);
+		return -1;
+	}
+
+	return 0;
 }
 
 int alloc_block()
@@ -21,10 +36,10 @@ int alloc_block()
 
 int alloc_and_free_block()
 {
-
+	return 0;
 }
 
 int alloc_freed_block()
 {
-
+	return 0;
 }
