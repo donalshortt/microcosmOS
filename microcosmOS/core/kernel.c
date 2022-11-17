@@ -3,6 +3,7 @@
 #include "../includes/vmm.h"
 #include "../includes/front.h"
 #include "../includes/types.h"
+#include "../includes/test.h"
 
 int kernel_main(unsigned long boot_info_addr)
 {
@@ -15,16 +16,14 @@ int kernel_main(unsigned long boot_info_addr)
 
     print_name();
 
-    // PMM
 
     setup_pmm(boot_info_addr);
 
     void* virt = (void*)0xFFFFFF0000000000;
     void* phys = pmm_alloc_block();
-
     vmm_map_page(virt, phys);
 
-    print_string("Wow", 9, VGA_LIGHT_GRAY);
+	run_tests();
 
     while(1);
     

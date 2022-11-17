@@ -10,7 +10,7 @@ DFILES="pmm_test.d pmm.d vmm.d mm.d front.d kernel.d boot.d"
 
 usage()
 {
-    echo "Builds the kernel"
+    echo "Builds and launches the kernel"
     echo "-h "
     echo "-d Build and launch debug mode in qemu (gdb)"
     echo "-q Build and launch normally in qemu"
