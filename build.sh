@@ -5,8 +5,8 @@ MEM=8192M
 
 CC=gcc
 SHARED_FLAGS="-fno-builtin -nostdinc -nostdlib -ffreestanding -Wall -Wextra -I. -MMD -mno-red-zone -no-pie -fno-pie -mcmodel=large"
-OBJECTS="pmm_test.o pmm.o vmm.o mm.o front.o kernel.o boot.o"
-DFILES="pmm_test.d pmm.d vmm.d mm.d front.d kernel.d boot.d"
+OBJECTS="test.o pmm_test.o pmm.o vmm.o mm.o front.o kernel.o boot.o"
+DFILES="test.d pmm_test.d pmm.d vmm.d mm.d front.d kernel.d boot.d"
 
 usage()
 {
@@ -36,9 +36,10 @@ compile_debug()
     $CC $SHARED_FLAGS -O0 -ggdb -c -o vmm.o mm/vmm.c
     $CC $SHARED_FLAGS -O0 -ggdb -c -o mm.o mm/mm.c
     $CC $SHARED_FLAGS -O0 -ggdb -c -o front.o front/front.c
+    $CC $SHARED_FLAGS -O0 -ggdb -c -o test.o test/test.c
     $CC $SHARED_FLAGS -O0 -ggdb -c -o pmm_test.o test/pmm_test.c
-
-    $CC $SHARED_FLAGS -O0 -ggdb -z -W1,--build-id=none -T core/kernel.ld -o kernel $OBJECTS
+    
+	$CC $SHARED_FLAGS -O0 -ggdb -z -W1,--build-id=none -T core/kernel.ld -o kernel $OBJECTS
     
     cd ../
 }
@@ -53,7 +54,8 @@ compile()
     $CC $SHARED_FLAGS -O2 -c -o vmm.o mm/vmm.c
     $CC $SHARED_FLAGS -O2 -c -o mm.o mm/mm.c
     $CC $SHARED_FLAGS -O2 -c -o front.o front/front.c
-    $CC $SHARED_FLAGS -O2 -c -o pmm_test.o test/pmm_test.c
+    $CC $SHARED_FLAGS -O0 -c -o test.o test/test.c
+	$CC $SHARED_FLAGS -O2 -c -o pmm_test.o test/pmm_test.c
 
     $CC $SHARED_FLAGS -O2 -z -W1,--build-id=none -T core/kernel.ld -o kernel $OBJECTS
     

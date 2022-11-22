@@ -16,8 +16,8 @@ int kernel_main(unsigned long boot_info_addr)
 
     print_name();
 
-
     setup_pmm(boot_info_addr);
+
 
     void* virt = (void*)0xFFFFFF0000000000;
     void* phys = pmm_alloc_block();
