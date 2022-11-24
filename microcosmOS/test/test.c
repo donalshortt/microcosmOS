@@ -23,14 +23,20 @@ void fail(Test test)
 {
 	switch (test)
 	{
-		case PMM_ALLOC_BLOCK:
-			print_string("FAIL pmm - alloc_block", 10, VGA_RED);
+		case PMM_ALLOC:
+			print_string("FAIL pmm - alloc", 10, VGA_RED);
 			break;
-		case PMM_ALLOC_AND_FREE_BLOCK:
-			print_string("FAIL pmm - alloc_and_free_block", 10, VGA_RED);
+		case PMM_ALLOC_AND_FREE:
+			print_string("FAIL pmm - alloc_and_free", 10, VGA_RED);
 			break;
-		case PMM_ALLOC_FREED_BLOCK:
-			print_string("FAIL pmm - alloc_freed_block", 10, VGA_RED);
+		case PMM_ALLOC_FREED:
+			print_string("FAIL pmm - alloc_freed", 10, VGA_RED);
+			break;
+		case PMM_ALLOC_TWO_FREE_ONE:
+			print_string("FAIL pmm - alloc_two_free_one", 10, VGA_RED);
+			break;
+		case PMM_ALLOC_ALL_FREE_ALL:
+			print_string("FAIL pmm - alloc_all_free_all", 10, VGA_RED);
 			break;
 		defualt:
 			return;

@@ -3,8 +3,6 @@
 #include "../includes/constants.h"
 #include "../includes/types.h"
 
-struct PMM* pmm_state = 0;
-
 void* kmemset(void* addr, int set, int len)
 {
     if (addr == 0)
@@ -207,6 +205,8 @@ void pmm_dealloc_block(void* ptr)
 
 void setup_pmm(unsigned long boot_info_addr)
 {
+	pmm_state = 0;
+
     extern char* _pmm_start;
     pmm_init((unsigned long) &_pmm_start, boot_info_addr);
     

@@ -3,8 +3,10 @@
 
 int pmm_run_tests();
 
-int alloc_block();
-int alloc_and_free_block();
-int alloc_freed_block();
+int alloc();
+int alloc_and_free();
+int alloc_freed();
+int alloc_two_free_one();
+int alloc_all_free_all();
 
 #endif
