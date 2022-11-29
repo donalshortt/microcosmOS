@@ -3,6 +3,8 @@
 #include "../includes/constants.h"
 #include "../includes/types.h"
 
+struct PMM* pmm_state;
+
 void* kmemset(void* addr, int set, int len)
 {
     if (addr == 0)
