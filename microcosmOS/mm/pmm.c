@@ -160,7 +160,7 @@ long get_first_free_block()
     int extra_bits = pmm_state->pmmap_size % 64;
 
     for (long i = 0; i < (pmm_state->pmmap_size / 64); i++) {
-        for (long j = 0; i < 64; j++) {
+        for (long j = 0; j < 64; j++) {
                 if (!(pmm_state->pmmap[i] & (1 << j)))
                     return (i * 64) + j;
         }

@@ -14,7 +14,8 @@ typedef enum Test {
 	PMM_ALLOC_AND_FREE = 2,
 	PMM_ALLOC_FREED = 3,
 	PMM_ALLOC_TWO_FREE_ONE = 4,
-	PMM_ALLOC_ALL_FREE_ALL = 5
+	PMM_ALLOC_1000_FREE_1000 = 5,
+	PMM_ALLOC_ALL_FREE_ALL = 6
 } Test;
 
 void test_ok(Suite suite);

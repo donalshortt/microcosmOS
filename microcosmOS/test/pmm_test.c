@@ -27,6 +27,11 @@ int pmm_run_tests()
 		return -1;
 	}
 
+	if (test_alloc_1000_free_1000() == -1) {
+		fail(PMM_ALLOC_1000_FREE_1000);
+		return -1;
+	}
+
 	if (test_alloc_all_free_all() == -1) {
 		fail(PMM_ALLOC_ALL_FREE_ALL);
 		return -1;
@@ -79,11 +84,30 @@ int test_alloc_two_free_one()
 	return assert_eq((long) ff_addr1, (long) ff_addr2);
 }
 
-int test_alloc_all_free_all()
+int test_alloc_1000_free_1000()
 {
-	for (long i = 0; i < pmm_state->max_blocks; i++) {
+	int used_before = pmm_state->used_blocks;
+
+	for (long i = 0; i < 1000; i++) {
 		pmm_alloc_block();
 	}
+	
+	int used_after = pmm_state->used_blocks;
+
+	if (assert_eq((used_before + 1000), used_after) != 0) {
+		return -1;
+	}
+
+	return 0;
+}
+
+int test_alloc_all_free_all()
+{
+	for (long i = 0; i < 1000; i++) {
+		pmm_alloc_block();
+	}
+
+	int used_blocks = pmm_state->used_blocks;
 
 /*	if (assert_eq(pmm_state->max_blocks - pmm_state->used_blocks, 0) == -1) {
 		return -1;
