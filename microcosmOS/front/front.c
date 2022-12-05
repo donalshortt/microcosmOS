@@ -1,4 +1,4 @@
-#include "../includes/front.h"
+#include "front.h"
 
 void print_string(const char *str, int line, int colour)
 {

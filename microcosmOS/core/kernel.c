@@ -1,9 +1,9 @@
-#include "../includes/multiboot2.h"
-#include "../includes/pmm.h"
-#include "../includes/vmm.h"
-#include "../includes/front.h"
-#include "../includes/types.h"
-#include "../includes/test.h"
+#include "../util/multiboot2.h"
+#include "../mm/pmm/pmm.h"
+#include "../mm/vmm/vmm.h"
+#include "../front/front.h"
+#include "../util/types.h"
+#include "../test/test.h"
 
 int kernel_main(unsigned long boot_info_addr)
 {

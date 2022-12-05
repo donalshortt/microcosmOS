@@ -1,4 +1,4 @@
-#include "../includes/test.h"
+#include "test.h"
 
 void test_ok(Suite suite)
 {

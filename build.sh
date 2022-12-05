@@ -32,13 +32,13 @@ compile_debug()
 
     $CC $SHARED_FLAGS -O0 -ggdb -c -o kernel.o core/kernel.c
     $CC $SHARED_FLAGS -O0 -ggdb -c -o boot.o core/boot.S
-    $CC $SHARED_FLAGS -O0 -ggdb -c -o pmm.o mm/pmm.c
-    $CC $SHARED_FLAGS -O0 -ggdb -c -o vmm.o mm/vmm.c
+    $CC $SHARED_FLAGS -O0 -ggdb -c -o pmm.o mm/pmm/pmm.c
+    $CC $SHARED_FLAGS -O0 -ggdb -c -o vmm.o mm/pmm/vmm.c
     $CC $SHARED_FLAGS -O0 -ggdb -c -o mm.o mm/mm.c
     $CC $SHARED_FLAGS -O0 -ggdb -c -o front.o front/front.c
     $CC $SHARED_FLAGS -O0 -ggdb -c -o test.o test/test.c
-    $CC $SHARED_FLAGS -O0 -ggdb -c -o pmm_test.o test/pmm_test.c
-	$CC $SHARED_FLAGS -O0 -ggdb -c -o vmm_test.o test/vmm_test.c
+    $CC $SHARED_FLAGS -O0 -ggdb -c -o pmm_test.o test/pmm/pmm_test.c
+	$CC $SHARED_FLAGS -O0 -ggdb -c -o vmm_test.o test/vmm/vmm_test.c
     
 	$CC $SHARED_FLAGS -O0 -ggdb -z -W1,--build-id=none -T core/kernel.ld -o kernel $OBJECTS
     
@@ -51,13 +51,13 @@ compile()
 
     $CC $SHARED_FLAGS -O2 -c -o kernel.o core/kernel.c
     $CC $SHARED_FLAGS -O2 -c -o boot.o core/boot.S
-    $CC $SHARED_FLAGS -O2 -c -o pmm.o mm/pmm.c
-    $CC $SHARED_FLAGS -O2 -c -o vmm.o mm/vmm.c
+    $CC $SHARED_FLAGS -O2 -c -o pmm.o mm/pmm/pmm.c
+    $CC $SHARED_FLAGS -O2 -c -o vmm.o mm/vmm/vmm.c
     $CC $SHARED_FLAGS -O2 -c -o mm.o mm/mm.c
     $CC $SHARED_FLAGS -O2 -c -o front.o front/front.c
     $CC $SHARED_FLAGS -O0 -c -o test.o test/test.c
-	$CC $SHARED_FLAGS -O2 -c -o pmm_test.o test/pmm_test.c
-	$CC $SHARED_FLAGS -O2 -c -o vmm_test.o test/vmm_test.c
+	$CC $SHARED_FLAGS -O2 -c -o pmm_test.o test/pmm/pmm_test.c
+	$CC $SHARED_FLAGS -O2 -c -o vmm_test.o test/vmm/vmm_test.c
     
 	$CC $SHARED_FLAGS -O2 -z -W1,--build-id=none -T core/kernel.ld -o kernel $OBJECTS
     

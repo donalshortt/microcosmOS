@@ -1,7 +1,8 @@
-#include "types.h"
-
 #ifndef __VMM_H__
 #define __VMM_H__
+
+#include "../../util/types.h"
+#include "../pmm/pmm.h"
 
 #define ENTRIES_PER_PT   512
 #define ENTRIES_PER_PD   512

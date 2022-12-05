@@ -1,6 +1,10 @@
 #ifndef __PMM_H__
 #define __PMM_H__
 
+#include "../../util/multiboot2.h"
+#include "../../util/constants.h"
+#include "../../util/types.h"
+
 struct PMM
 {
     unsigned long mem_size;

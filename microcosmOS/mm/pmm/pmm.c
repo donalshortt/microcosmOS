@@ -1,7 +1,4 @@
-#include "../includes/pmm.h"
-#include "../includes/multiboot2.h"
-#include "../includes/constants.h"
-#include "../includes/types.h"
+#include "pmm.h"
 
 struct PMM* pmm_state;
 

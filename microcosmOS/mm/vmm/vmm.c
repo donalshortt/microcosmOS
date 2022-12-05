@@ -1,5 +1,5 @@
-#include "../includes/vmm.h"
-#include "../includes/pmm.h"
+
+#include "vmm.h"
 
 inline void pe_set_flag(pe* pe, uint64_t flag) { *pe |= flag; };
 inline void pe_del_flag(pe* pe, uint64_t flag) { *pe &= ~flag; };

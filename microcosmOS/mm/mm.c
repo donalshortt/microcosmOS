@@ -1,6 +1,4 @@
-#include "../includes/pmm.h"
-#include "../includes/vmm.h"
-#include "../includes/types.h"
+
 
 void* kmalloc(int size)
 {

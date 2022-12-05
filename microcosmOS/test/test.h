@@ -1,8 +1,9 @@
 #ifndef _TEST_H_
 #define _TEST_H_
 
-#include "../includes/front.h"
-#include "../includes/pmm_test.h"
+#include "../front/front.h"
+#include "pmm/pmm_test.h"
+#include "vmm/vmm_test.h"
 
 typedef enum Suite {
 	PMM = 1, 

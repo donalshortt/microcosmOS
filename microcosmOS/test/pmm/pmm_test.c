@@ -1,9 +1,5 @@
-#include "../includes/test.h"
-#include "../includes/pmm_test.h"
-#include "../includes/front.h"
-#include "../includes/pmm.h"
-#include "../includes/types.h"
-#include "../includes/constants.h"
+#include "pmm_test.h"
+
 
 int pmm_run_tests()
 {

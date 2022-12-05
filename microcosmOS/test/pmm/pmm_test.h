@@ -1,6 +1,12 @@
 #ifndef __PMM_TEST_H__
 #define __PMM_TEST_H__
 
+#include "../../test/test.h"
+#include "../../front/front.h"
+#include "../../mm/pmm/pmm.h"
+#include "../../util/types.h"
+#include "../../util//constants.h"
+
 int pmm_run_tests();
 
 int test_alloc();
