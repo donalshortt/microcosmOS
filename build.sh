@@ -5,8 +5,8 @@ MEM=8192M
 
 CC=gcc
 SHARED_FLAGS="-fno-builtin -nostdinc -nostdlib -ffreestanding -Wall -Wextra -I. -MMD -mno-red-zone -no-pie -fno-pie -mcmodel=large"
-OBJECTS="test.o pmm_test.o pmm.o vmm.o mm.o front.o kernel.o boot.o"
-DFILES="test.d pmm_test.d pmm.d vmm.d mm.d front.d kernel.d boot.d"
+OBJECTS="test.o pmm_test.o vmm_test.o pmm.o vmm.o mm.o front.o kernel.o boot.o"
+DFILES="test.d pmm_test.d vmm_test.c pmm.d vmm.d mm.d front.d kernel.d boot.d"
 
 usage()
 {
@@ -38,6 +38,7 @@ compile_debug()
     $CC $SHARED_FLAGS -O0 -ggdb -c -o front.o front/front.c
     $CC $SHARED_FLAGS -O0 -ggdb -c -o test.o test/test.c
     $CC $SHARED_FLAGS -O0 -ggdb -c -o pmm_test.o test/pmm_test.c
+	$CC $SHARED_FLAGS -O0 -ggdb -c -o vmm_test.o test/vmm_test.c
     
 	$CC $SHARED_FLAGS -O0 -ggdb -z -W1,--build-id=none -T core/kernel.ld -o kernel $OBJECTS
     
@@ -56,8 +57,9 @@ compile()
     $CC $SHARED_FLAGS -O2 -c -o front.o front/front.c
     $CC $SHARED_FLAGS -O0 -c -o test.o test/test.c
 	$CC $SHARED_FLAGS -O2 -c -o pmm_test.o test/pmm_test.c
-
-    $CC $SHARED_FLAGS -O2 -z -W1,--build-id=none -T core/kernel.ld -o kernel $OBJECTS
+	$CC $SHARED_FLAGS -O2 -c -o vmm_test.o test/vmm_test.c
+    
+	$CC $SHARED_FLAGS -O2 -z -W1,--build-id=none -T core/kernel.ld -o kernel $OBJECTS
     
     cd ../
 }
@@ -101,9 +103,18 @@ qemu()
     qemu-system-x86_64 -cdrom $ISO -serial stdio -m $MEM
 }
 
+compile_without_run()
+{
+	clean
+	compile
+	make_iso
+
+	move_to_build_and_remove_dfiles
+}
+
 main()
 {
-    while getopts ":hmdqc" options; do
+    while getopts ":hmdqwc" options; do
         case "${options}" in
         h)
             usage
@@ -116,9 +127,11 @@ main()
             debug
             ;;
         q)
-            echo "uh hello"
             qemu
             ;;
+		w)
+			compile_without_run
+			;;
         c)
             clean
             ;;

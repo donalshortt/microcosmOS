@@ -35,11 +35,12 @@ void fail(Test test)
 		case PMM_ALLOC_TWO_FREE_ONE:
 			print_string("FAIL pmm - alloc_two_free_one", 10, VGA_RED);
 			break;
+		case PMM_ALLOC_1000_FREE_1000:
+			print_string("FAIL pmm - alloc_1000_free_1000", 10, VGA_RED);
+			break;
 		case PMM_ALLOC_ALL_FREE_ALL:
 			print_string("FAIL pmm - alloc_all_free_all", 10, VGA_RED);
 			break;
-		defualt:
-			return;
 	}
 }
 
