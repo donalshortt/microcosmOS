@@ -16,7 +16,7 @@ header_start:
 
     .short MULTIBOOT_HEADER_TAG_END
     .short 0    // flags, none set
-    .long 8     // size, including itself (short + short + long)
+	.long 8     // size, including itself (short + short + long)
 header_end:
 
 .code32
@@ -32,85 +32,85 @@ header_end:
 .data
 .align GDT_TABLE_ALIGNMENT
 gdt_table:
-        .8byte GDT_FIRST_ENTRY
-        .8byte GDT_KERNEL_ENTRY
+	.8byte GDT_FIRST_ENTRY
+	.8byte GDT_KERNEL_ENTRY
 
 gdt_table_end:
-        .skip (GDT_TABLE_SIZE - (gdt_table_end - gdt_table))
+	.skip (GDT_TABLE_SIZE - (gdt_table_end - gdt_table))
 
 gdt_ptr:
-         .short GDT_TABLE_SIZE - 1
-         .long gdt_table
-
+	.short GDT_TABLE_SIZE - 1
+	.long gdt_table
+	
 
 .section .text
 .global _start
 .type _start, @function
 _start:
-        movl $tmp_stack + BOOT_STACK_SIZE, %esp
+	movl $tmp_stack + BOOT_STACK_SIZE, %esp
 
-        /* Set two entries in the PML4 table, each pointing to a pdpt */
-        movl $low_pdpt, %eax
-        or $(MMU_PRESENT | MMU_WRITABLE), %eax
-        movl %eax, pml4 + (PML4_ADDR_TO_ENTRY_INDEX(OS_PHYS_START) * PML4_ENTRY_SIZE)
+	/* Set two entries in the PML4 table, each pointing to a pdpt */
+	movl $low_pdpt, %eax
+	or $(MMU_PRESENT | MMU_WRITABLE), %eax
+	movl %eax, pml4 + (PML4_ADDR_TO_ENTRY_INDEX(OS_PHYS_START) * PML4_ENTRY_SIZE)
 
-        movl $high_pdpt, %eax
-        or $(MMU_PRESENT | MMU_WRITABLE), %eax
-        movl %eax, pml4 + (PML4_ADDR_TO_ENTRY_INDEX(OS_VIRT_START) * PML4_ENTRY_SIZE)
+	movl $high_pdpt, %eax
+	or $(MMU_PRESENT | MMU_WRITABLE), %eax
+	movl %eax, pml4 + (PML4_ADDR_TO_ENTRY_INDEX(OS_VIRT_START) * PML4_ENTRY_SIZE)
 
-        /* Set an entry for each PDPT... for the physical and virtual*/
-        movl $low_page_directory_table, %eax
-        or $(MMU_PRESENT | MMU_WRITABLE), %eax
-        movl %eax, low_pdpt + (PDPT_ADDR_TO_ENTRY_INDEX(OS_PHYS_START) * PDPT_ENTRY_SIZE)
+	/* Set an entry for each PDPT... for the physical and virtual*/
+	movl $low_page_directory_table, %eax
+	or $(MMU_PRESENT | MMU_WRITABLE), %eax
+	movl %eax, low_pdpt + (PDPT_ADDR_TO_ENTRY_INDEX(OS_PHYS_START) * PDPT_ENTRY_SIZE)
 
-        movl $high_page_directory_table, %eax
-        or $(MMU_PRESENT | MMU_WRITABLE), %eax
-        movl %eax, high_pdpt + (PDPT_ADDR_TO_ENTRY_INDEX(OS_VIRT_START) * PDPT_ENTRY_SIZE)
+	movl $high_page_directory_table, %eax
+	or $(MMU_PRESENT | MMU_WRITABLE), %eax
+	movl %eax, high_pdpt + (PDPT_ADDR_TO_ENTRY_INDEX(OS_VIRT_START) * PDPT_ENTRY_SIZE)
 
-        mov $0, %ecx
+	mov $0, %ecx
 
-        /* TODO: Here im using 2mb pages for the kernel -> should I not be using 4kb? */
-        movl $_kernel_physical_end, %esi
-        shrl $TWO_MEGABYTES_SHIFT, %esi
-        addl $1, %esi
+	/* TODO: Here im using 2mb pages for the kernel -> should I not be using 4kb? */
+	movl $_kernel_physical_end, %esi
+	shrl $TWO_MEGABYTES_SHIFT, %esi
+	addl $1, %esi
 
 page_directory_table_loop:
-        movl $TWO_MEGABYTES, %eax
-        mul %ecx
-        /* No. of pages calculated ^^^*/
-        or $(MMU_PRESENT | MMU_WRITABLE | MMU_PDE_TWO_MB), %eax
-        movl %eax, low_page_directory_table(, %ecx, PAGE_DIRECTORY_ENTRY_SIZE)
-        movl %eax, high_page_directory_table(, %ecx, PAGE_DIRECTORY_ENTRY_SIZE)
-        /* Store the two entries in the low and high page tables respectively (low = phys, high = virt) */
+	movl $TWO_MEGABYTES, %eax
+	mul %ecx
+	/* No. of pages calculated ^^^*/
+	or $(MMU_PRESENT | MMU_WRITABLE | MMU_PDE_TWO_MB), %eax
+	movl %eax, low_page_directory_table(, %ecx, PAGE_DIRECTORY_ENTRY_SIZE)
+	movl %eax, high_page_directory_table(, %ecx, PAGE_DIRECTORY_ENTRY_SIZE)
+	/* Store the two entries in the low and high page tables respectively (low = phys, high = virt) */
 
-        inc %ecx
-        cmp %esi, %ecx
-        jne page_directory_table_loop  // if not equal redo loop
+	inc %ecx
+	cmp %esi, %ecx
+	jne page_directory_table_loop  // if not equal redo loop
 
-        /* Point cr3 to pml4 */
-        movl $pml4, %eax
-        movl %eax, %cr3
+	/* Point cr3 to pml4 */
+	movl $pml4, %eax
+	movl %eax, %cr3
 
-        /* set cr4 flags; (enable PAE) */
-        movl $CR4_FINAL, %eax
-        movl %eax, %cr4
+	/* set cr4 flags; (enable PAE) */
+	movl $CR4_FINAL, %eax
+	movl %eax, %cr4
 
-        /* enable long mode */
-        movl $MSR_EFER_ADDR, %ecx
-        rdmsr
-        or $MSR_EFER_FINAL, %eax
-        wrmsr
+	/* enable long mode */
+	movl $MSR_EFER_ADDR, %ecx
+	rdmsr
+	or $MSR_EFER_FINAL, %eax
+	wrmsr
 
-        /* set cr0 flags; (protected mode, extension type, enable paging) */
-        movl $CR0_FINAL, %eax
-        movl %eax, %cr0
+	/* set cr0 flags; (protected mode, extension type, enable paging) */
+	movl $CR0_FINAL, %eax
+	movl %eax, %cr0
 
-        lgdt gdt_ptr
+	lgdt gdt_ptr
 
-        ljmp $(GDT_ENTRY_SIZE), $_start64
+	ljmp $(GDT_ENTRY_SIZE), $_start64
 
-        cli
-        hlt
+	cli
+	hlt
 
 .code64
 
