@@ -1,13 +1,19 @@
+#include "mm.h"
 
+struct heap_metadata heap_metadata;
+
+void heap_init() {
+
+}
 
 void* kmalloc(int size)
 {
     int no_blocks = 0;
 
-    if (!(size % 4096)) {
-        no_blocks = size / 4096;
-    } else {
+    if (size % 4096) {
         no_blocks = (size / 4096) + 1;
+    } else {
+        no_blocks = size / 4096;
     }
 
     // Check if there is enough memory available (first fit?)

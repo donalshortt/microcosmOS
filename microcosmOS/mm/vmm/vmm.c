@@ -7,12 +7,6 @@ inline void pe_set_addr(pe* pe, uint64_t addr) {
     *pe &= addr; 
 };
 
-void vmm_init()
-{
-
-	return;
-}
-
 //TODO: Standardise return codes!
 int vmm_alloc_page(pte* pte)
 {
@@ -75,7 +69,7 @@ void* get_current_pml4()
 }
 
 // Sets up an entry for a virtual address
-void vmm_map_page(void* virt, void* phys)
+void vmm_map_page(uint64_t phys, uint64_t virt)
 {   
     struct PML4* pml4 = (struct PML4*)get_current_pml4();
 

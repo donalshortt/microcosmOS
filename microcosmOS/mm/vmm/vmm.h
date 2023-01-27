@@ -14,11 +14,6 @@
 #define PD_SIZE   4096
 #define PT_SIZE   4096
 
-//#define PAGE_PRESENT    0b/**/00000000/**/00000000/**/00000000/**/00000000/**/00000000/**/00000000/**/00000000/**/00000001
-//#define PAGE_WRITEABLE  0b/**/00000000/**/00000000/**/00000000/**/00000000/**/00000000/**/00000000/**/00000000/**/00000010
-//#define PAGE_MODE       0b/**/00000000/**/00000000/**/00000000/**/00000000/**/00000000/**/00000000/**/00000000/**/00000100
-//#define PAGE_ADDR       0b/**/00000000/**/11111111/**/11111111/**/11111111/**/11111111/**/11111111/**/11110000/**/00000000
-
 #define PAGE_PRESENT   0x1
 #define PAGE_WRITEABLE 0x2
 #define PAGE_MODE      0x4
@@ -64,11 +59,11 @@ pte* vmm_lookup_pde(struct PD* pd, vaddr vaddr);
 pte* vmm_lookup_pdpte(struct PDPT* pdpt, vaddr vaddr);
 pte* vmm_lookup_pml4e(struct PML4* pml4, vaddr vaddr);
 
-int vmm_switch_pml5(struct PML4* pml4);
+int vmm_switch_pml4(struct PML4* pml4);
 
 void vmm_remove_tlbe(vaddr vaddr);
 
-void vmm_map_page(void* virt, void* phys);
+void vmm_map_page(uint64_t phys, uint64_t virt);
 
 void vmm_init();
 

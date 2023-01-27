@@ -1,6 +1,7 @@
 #include "../util/multiboot2.h"
 #include "../mm/pmm/pmm.h"
 #include "../mm/vmm/vmm.h"
+#include "../mm/mm.h"
 #include "../front/front.h"
 #include "../util/types.h"
 #include "../test/test.h"
@@ -18,10 +19,12 @@ int kernel_main(unsigned long boot_info_addr)
 
     setup_pmm(boot_info_addr);
 
+	void* addr = pmm_alloc_block();
+	vmm_map_page((uint64_t)addr, MAIN_MEMORY_START);
 
-    void* virt = (void*)0xFFFFFF0000000000;
-    void* phys = pmm_alloc_block();
-    vmm_map_page(virt, phys);
+	void* value = (void*)MAIN_MEMORY_START;
+	//value* = 0x1;
+	int i = 0;
 
 	run_tests();
 

@@ -62,7 +62,7 @@ void pmm_init(unsigned long pmmap_addr, unsigned long boot_info_addr)
     pmm_state->pmmap = (unsigned long*) pmmap_addr;
     pmm_state->pmmap_size = pmm_state->max_blocks / BLOCKS_PER_QWORD; // number of bits in a ulong is 64, so how many of these there are
     
-    // If the no. of blocks is not divisible by 64, we will have some at end end so these must be accounted for
+    // If the no. of blocks is not divisible by 64, we will have some at end end so these must be accounted for
     if ((pmm_state->max_blocks % BLOCKS_PER_QWORD) != 0) {
         pmm_state->pmmap_size++;
     }
