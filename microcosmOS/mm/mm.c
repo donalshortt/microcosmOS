@@ -1,7 +1,5 @@
 #include "mm.h"
 
-struct heap_metadata heap_metadata;
-
 void heap_init() {
 
 }

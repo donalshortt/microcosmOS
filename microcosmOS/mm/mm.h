@@ -12,11 +12,11 @@ struct heap_metadata_element {
 	int size; // in blocks
 	struct heap_chunk* next;
 	void* data;
-} heap_metadata_element;
+};
 
 struct heap_metadata {
 	struct heap_metadata_element* first_element;
-} heap_metadata;
+};
 
 void* kmalloc(int size);
 

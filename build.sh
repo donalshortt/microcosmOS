@@ -33,7 +33,7 @@ compile_debug()
     $CC $SHARED_FLAGS -O0 -ggdb -c -o kernel.o core/kernel.c
     $CC $SHARED_FLAGS -O0 -ggdb -c -o boot.o core/boot.S
     $CC $SHARED_FLAGS -O0 -ggdb -c -o pmm.o mm/pmm/pmm.c
-    $CC $SHARED_FLAGS -O0 -ggdb -c -o vmm.o mm/pmm/vmm.c
+    $CC $SHARED_FLAGS -O0 -ggdb -c -o vmm.o mm/vmm/vmm.c
     $CC $SHARED_FLAGS -O0 -ggdb -c -o mm.o mm/mm.c
     $CC $SHARED_FLAGS -O0 -ggdb -c -o front.o front/front.c
     $CC $SHARED_FLAGS -O0 -ggdb -c -o test.o test/test.c

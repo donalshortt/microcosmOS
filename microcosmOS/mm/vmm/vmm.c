@@ -44,17 +44,19 @@ __attribute__((unused)) void vmm_set_CR3(__attribute__((unused)) uint64_t pml4)
 }
 
 //TODO: Remove this shit
-uint64_t CURRENT_PML4;
+struct PML4* CURRENT_PML4;
 
 __attribute__((unused)) int vmm_switch_pml4(struct PML4* pml4)
 {
     if(!pml4) {
         //TODO: Error
-        return 0;
+        return 1;
     }
 
     CURRENT_PML4 = pml4;
     vmm_set_CR3((uint64_t)pml4);
+
+	return 0;
 }
 
 

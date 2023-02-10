@@ -22,8 +22,9 @@ int kernel_main(unsigned long boot_info_addr)
 	void* addr = pmm_alloc_block();
 	vmm_map_page((uint64_t)addr, MAIN_MEMORY_START);
 
-	void* value = (void*)MAIN_MEMORY_START;
-	//value* = 0x1;
+	uint64_t* pointer = (uint64_t*)MAIN_MEMORY_START;
+	*pointer = 42;
+
 	int i = 0;
 
 	run_tests();
