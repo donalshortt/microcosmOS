@@ -2,7 +2,7 @@
 
 inline void pe_set_flag(pe* pe, uint64_t flag) { *pe |= flag; };
 inline void pe_del_flag(pe* pe, uint64_t flag) { *pe &= ~flag; };
-inline void pe_set_addr(pe* pe, uint64_t addr) { 
+inline void pe_set_addr(pe* pe, uintptr_t addr) { 
     *pe |= PAGE_ADDR; 
     *pe &= addr; 
 };
@@ -10,16 +10,16 @@ inline void pe_set_addr(pe* pe, uint64_t addr) {
 //TODO: Standardise return codes!
 int vmm_alloc_page(pte* pte)
 {
-    void* page_addr = pmm_alloc_block();
+    uintptr_t page_addr = pmm_alloc_block();
 
     if(!page_addr) {
         //TODO: Error
         return 1;
-    } 
+    }
 
     pe_set_flag(pte, PAGE_PRESENT);
     pe_set_flag(pte, PAGE_WRITEABLE);
-    pe_set_addr(pte, (uint64_t)page_addr);
+    pe_set_addr(pte, page_addr);
 
     return 0;
 }
@@ -75,10 +75,10 @@ void vmm_map_page(uint64_t phys, uint64_t virt)
 {   
     struct PML4* pml4 = (struct PML4*)get_current_pml4();
 
-    uint64_t pml4_i  = PML4_GET_INDEX((uint64_t)virt);
-    uint64_t pdpte_i = PDPT_GET_INDEX((uint64_t)virt);
-    uint64_t pde_i   = PD_GET_INDEX((uint64_t)virt);
-    uint64_t pte_i   = PT_GET_INDEX((uint64_t)virt);
+    uint64_t pml4_i  = PML4_GET_INDEX(virt);
+    uint64_t pdpte_i = PDPT_GET_INDEX(virt);
+    uint64_t pde_i   = PD_GET_INDEX(virt);
+    uint64_t pte_i   = PT_GET_INDEX(virt);
 
     struct PDPT* pdpt = 0;
     struct PD* pd = 0;

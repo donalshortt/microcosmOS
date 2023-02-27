@@ -10,6 +10,7 @@ typedef uint64_t pde;
 typedef uint64_t pdpte;
 typedef uint64_t pml4e;
 typedef uint64_t vaddr;
+typedef uint64_t uintptr_t;
 
 #define NULL 0
 

@@ -1,4 +1,4 @@
-#include "pmm.h"
+#include "pmm.h"pmm.c
 
 struct PMM* pmm_state;
 
@@ -174,30 +174,30 @@ long get_first_free_block()
     return -1;
 }
 
-void* pmm_alloc_block()
+uintptr_t pmm_alloc_block()
 {
     if (pmm_state->max_blocks - pmm_state->used_blocks <= 0) {
         /* TODO: ERROR no mem */
         return NULL;
     }
 
-    long index = get_first_free_block();    
+    uintptr_t index = get_first_free_block();    
 
     bit_set(pmm_state->pmmap, index);
 
     pmm_state->used_blocks++;
 
-    return (void*) (index * BLOCK_SIZE);
+    return (index * BLOCK_SIZE);
 }
 
-void pmm_dealloc_block(void* ptr)
+void pmm_dealloc_block(uintptr_t ptr)
 {
     if (ptr == NULL) {
         // TODO: ERROR null ptr
         return;
     }
 
-    long index = (unsigned long) ptr / BLOCK_SIZE;
+    uintptr_t index =  ptr / BLOCK_SIZE;
     bit_unset(pmm_state->pmmap, index);
 
     pmm_state->used_blocks++;
