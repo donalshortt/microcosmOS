@@ -1,4 +1,5 @@
 #include "../util/multiboot2.h"
+#include "../mm/mm.h"
 #include "../mm/pmm/pmm.h"
 #include "../mm/vmm/vmm.h"
 #include "../mm/mm.h"
@@ -19,13 +20,29 @@ int kernel_main(unsigned long boot_info_addr)
 
     setup_pmm(boot_info_addr);
 
-	void* addr = pmm_alloc_block();
-	vmm_map_page((uint64_t)addr, MAIN_MEMORY_START);
+	void* test = kmalloc(8193);
+	kmemset(test, 1, 8193);
+	//
+	//uintptr_t paddr = pmm_alloc_block();
+	//vmm_map_page(paddr, MAIN_MEMORY_START);
+	//long* ptr = (long*)MAIN_MEMORY_START;
+	//*ptr = 42;
+	//
+	
+	/*struct myStruct {
+		int wow;
+		int weewoo;
+	};
+	
+	uintptr_t paddr = pmm_alloc_block();
+	vmm_map_page(paddr, MAIN_MEMORY_START);
+	struct myStruct* myStruct = (struct myStruct*)MAIN_MEMORY_START;
+	myStruct->wow = 42;
+	myStruct->weewoo = 42;
 
-	uint64_t* pointer = (uint64_t*)MAIN_MEMORY_START;
-	*pointer = 42;
+	int i = 1;*/
 
-	int i = 0;
+	heap_init();
 
 	run_tests();
 

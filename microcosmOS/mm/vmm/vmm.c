@@ -71,7 +71,7 @@ void* get_current_pml4()
 }
 
 // Sets up an entry for a virtual address
-void vmm_map_page(uint64_t phys, uint64_t virt)
+void vmm_map_page(uintptr_t phys, uintptr_t virt)
 {   
     struct PML4* pml4 = (struct PML4*)get_current_pml4();
 

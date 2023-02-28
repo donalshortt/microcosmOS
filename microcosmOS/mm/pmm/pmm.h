@@ -16,7 +16,7 @@ struct PMM
 
 extern struct PMM* pmm_state;
 
-void* kmemset(void* addr, int set, int len);
+int kmemset(void* addr, int set, int len);
 void setup_pmm(unsigned long boot_info_addr);
 
 uintptr_t pmm_alloc_block();

@@ -2,10 +2,10 @@
 
 struct PMM* pmm_state;
 
-void* kmemset(void* addr, int set, int len)
+int kmemset(void* addr, int set, int len)
 {
     if (addr == 0)
-        return 0;
+        return 1;
 
     char* temp = (char*) addr;
 
@@ -15,7 +15,7 @@ void* kmemset(void* addr, int set, int len)
         len--;
     }
 
-    return addr;
+	return 0;
 }
 
 // WARNING: This might be a bit too close to the implementation on the multiboot speciication examples

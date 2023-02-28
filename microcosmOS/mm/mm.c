@@ -1,27 +1,50 @@
 #include "mm.h"
+#include "pmm/pmm.h"
+#include "vmm/vmm.h"
 
-void heap_init() {
+struct heap_block {
+	int size;
+	char is_free;
+	struct heap_block* next;
+	uintptr_t data;
+};
 
+struct heap_block heap = {0};
+
+void heap_init()
+{
+	if (heap.data == 0) {
+		int wow = 42;
+	} else {
+		int sadwow = 24;
+	}
 }
 
 void* kmalloc(int size)
 {
-    int no_blocks = 0;
+	if (heap.data == 0) {
+		uintptr_t frame_addr = pmm_alloc_block();
+		vmm_map_page(frame_addr, MAIN_MEMORY_START);
 
-    if (size % 4096) {
-        no_blocks = (size / 4096) + 1;
-    } else {
-        no_blocks = size / 4096;
-    }
+		struct heap_block* metadata = (struct heap_block*) MAIN_MEMORY_START;
+		metadata->size = size;
+		metadata->is_free = 0;
+		metadata->next = NULL;
+		metadata->data = MAIN_MEMORY_START + 4096;
 
-    // Check if there is enough memory available (first fit?)
-    if (no_blocks == 1) {
-        void* phys_alloced = pmm_alloc_block();
-    } else {
-    
-    }
+		int no_blocks = size / 4096;
+		if (size % 4096 != 0) 
+			no_blocks++;
+		
+		for (int i = 0; i < no_blocks; i++) {
+			frame_addr = pmm_alloc_block();
+			vmm_map_page(frame_addr, (MAIN_MEMORY_START + i * 0x1000));
+		}
 
-    return 0;
+		return (void*)metadata->data;
+	}
+
+	return 0;
 }
 
 void kfree(void* ptr)

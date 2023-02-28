@@ -20,4 +20,6 @@ struct heap_metadata {
 
 void* kmalloc(int size);
 
+void heap_init();
+
 #endif
