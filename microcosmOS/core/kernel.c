@@ -20,8 +20,18 @@ int kernel_main(unsigned long boot_info_addr)
 
     setup_pmm(boot_info_addr);
 
-	void* test = kmalloc(8193);
-	kmemset(test, 1, 8193);
+	uintptr_t phys = 0x4000;
+	uintptr_t virt = 0x6000;
+
+	vmm_map_page(phys, virt);
+
+	uintptr_t* test = (uintptr_t*)0x6000;
+	*test = 42;
+
+	int i = 0;
+
+	//void* test = kmalloc(8193);
+	//kmemset(test, 1, 8193);
 	//
 	//uintptr_t paddr = pmm_alloc_block();
 	//vmm_map_page(paddr, MAIN_MEMORY_START);
