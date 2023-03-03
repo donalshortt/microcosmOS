@@ -71,21 +71,21 @@ void* get_current_pml4()
     return rv;
 }
 
+void flush_tlb()
+{
+	__asm__ __volatile__("wbinvd" : : : "memory");
+}
+
 // Sets up an entry for a virtual address
 // something is extremely fishy here
-//
-// super weird
-// no travel
-// its like a touch screen
-// donAL IS GAYASDFGJKLJSLKFDG FGJKSDSLIRTIERAS
 void vmm_map_page(uintptr_t phys, uintptr_t virt)
 {   
     struct PML4* pml4 = (struct PML4*)get_current_pml4();
 
     uint64_t pml4_i  = PML4_GET_INDEX(virt);
-    uint64_t pdpt_i = PDPT_GET_INDEX(virt);
-    uint64_t pd_i   = PD_GET_INDEX(virt);
-    uint64_t pt_i   = PT_GET_INDEX(virt);
+    uint64_t pdpt_i  = PDPT_GET_INDEX(virt);
+    uint64_t pd_i    = PD_GET_INDEX(virt);
+    uint64_t pt_i    = PT_GET_INDEX(virt);
 
     struct PDPT* pdpt = 0;
     struct PD* pd = 0;
@@ -108,7 +108,7 @@ void vmm_map_page(uintptr_t phys, uintptr_t virt)
         pd = (struct PD*) pmm_alloc_block();
         kmemset(pd, 0, PD_SIZE);
         
-        pdpte pdpte = pdpt->entries[pd_i];
+        pdpte pdpte = pdpt->entries[pdpt_i];
 
         pe_set_flag(pdpte, PAGE_PRESENT);
         pe_set_flag(pdpte, PAGE_WRITEABLE);
@@ -121,19 +121,22 @@ void vmm_map_page(uintptr_t phys, uintptr_t virt)
         pt = (struct PT*) pmm_alloc_block();
         kmemset(pt, 0, PT_SIZE);
         
-        pte pte = pt->entries[pt_i];
+        pde pde = pd->entries[pd_i];
 
-        pe_set_flag(pte, PAGE_PRESENT);
-        pe_set_flag(pte, PAGE_WRITEABLE);
-        pe_set_addr(pte, (uint64_t)pt);
+        pe_set_flag(pde, PAGE_PRESENT);
+        pe_set_flag(pde, PAGE_WRITEABLE);
+        pe_set_addr(pde, (uint64_t)pt);
     } else {
         pt = (struct PT*)pd->entries[pd_i];
     }
 
-    /*pte pte = pt->entries[pte_i];
+    pte pte = pt->entries[pt_i];
 
     pe_set_flag(pte, PAGE_PRESENT);
     pe_set_flag(pte, PAGE_WRITEABLE);
-    pe_set_addr(pte,(uint64_t)phys);*/
+    pe_set_addr(pte,(uint64_t)phys);
+
+	// TODO: don't flush the entire TLB
+	flush_tlb();
 }
 

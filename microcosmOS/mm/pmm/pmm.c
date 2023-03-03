@@ -18,7 +18,6 @@ int kmemset(void* addr, int set, int len)
 	return 0;
 }
 
-// WARNING: This might be a bit too close to the implementation on the multiboot speciication examples
 // TODO: consider renaming this function
 unsigned long get_available_mem(unsigned long boot_info_addr)
 {
@@ -90,27 +89,27 @@ static inline char bit_test(unsigned long* bitmap, int bit)
     return bitmap[bit / 64] & (1 << (bit % 64));
 }
 
-//  Init: makes address space ready for allocation and vice versa 
+// 
+void pmm_init_space(unsigned long base_addr, unsigned long mem_size)
+{
+	unsigned int no_blocks = mem_size / BLOCK_SIZE;
+	unsigned int alignment = base_addr / BLOCK_SIZE;
+    
+	for (unsigned int i = 0; i < no_blocks; i++) {
+		bit_unset(pmm_state->pmmap, alignment++);
+		pmm_state->used_blocks--;
+	}
+}
 
-void pmm_init_deinit_space(unsigned long base_addr, unsigned long mem_size, char i_or_d)
-{                                                                                                                           
-    unsigned int no_blocks = mem_size / BLOCK_SIZE;                                                                         
-    unsigned int alignment = base_addr / BLOCK_SIZE;                                                                        
-
-    if (i_or_d == SPACE_INIT) {
-        for (unsigned int i = 0; i < no_blocks; i++) {
-            bit_unset(pmm_state->pmmap, alignment++);
-            pmm_state->used_blocks--;
-        }
-    } else {
-        for (unsigned int i = 0; i < no_blocks; i++) {
-            bit_set(pmm_state->pmmap, alignment++);
-            pmm_state->used_blocks++;
-        }
-    }
-
-    if (i_or_d == SPACE_INIT)
-        bit_set(pmm_state->pmmap, 0);
+void pmm_deinit_space(unsigned long base_addr, unsigned long mem_size)
+{
+	unsigned int no_blocks = mem_size / BLOCK_SIZE;
+	unsigned int alignment = base_addr / BLOCK_SIZE;
+    
+	for (unsigned int i = 0; i < no_blocks; i++) {
+		bit_set(pmm_state->pmmap, alignment++);
+		pmm_state->used_blocks++;
+	}
 }
 
 // TODO: This is copied from get_total_mem -> try to reduce code duplication
@@ -134,7 +133,7 @@ void pmm_init_available_mem(unsigned long boot_info_addr)
                         + ((struct multiboot_tag_mmap *) mb_tag)->entry_size))
             {
                 if (((struct multiboot_mmap_entry *) mmap)->type == MULTIBOOT_MEMORY_AVAILABLE) {
-                    pmm_init_deinit_space(mmap->addr, mmap->len, SPACE_INIT);                    
+                    pmm_init_space(mmap->addr, mmap->len);
                 }
             }
         }
@@ -143,14 +142,17 @@ void pmm_init_available_mem(unsigned long boot_info_addr)
 
 // Deinits the space associated with the kernel boot, kernel proper and pmmap
 
+// init: space is available
+// deinit: not available
+
 void pmm_deinit_used_spaces()
 {
     extern char* _kernel_physical_start;
     extern char* _kernel_size;
     extern char* _pmm_start;
 
-    pmm_init_deinit_space((unsigned long) &_kernel_physical_start, (unsigned long) &_kernel_size, SPACE_DEINIT);
-    pmm_init_deinit_space((unsigned long) &_pmm_start, pmm_state->pmmap_size, SPACE_DEINIT);
+    pmm_deinit_space((unsigned long) &_kernel_physical_start, (unsigned long) &_kernel_size);
+    pmm_deinit_space((unsigned long) &_pmm_start, pmm_state->pmmap_size);
 }
 
 long get_first_free_block()
@@ -159,8 +161,8 @@ long get_first_free_block()
 
     for (long i = 0; i < (pmm_state->pmmap_size / 64); i++) {
         for (long j = 0; j < 64; j++) {
-                if (!(pmm_state->pmmap[i] & (1 << j)))
-                    return (i * 64) + j;
+            if (!(pmm_state->pmmap[i] & (1 << j)))
+                return (i * 64) + j;
         }
     }
 
@@ -187,7 +189,9 @@ uintptr_t pmm_alloc_block()
 
     pmm_state->used_blocks++;
 
-    return (index * BLOCK_SIZE);
+	// TODO: remove this temporary fix
+	// -> i want to make sure im allocating memory that is not already mapped
+    return (index * BLOCK_SIZE + 0x1000000);
 }
 
 void pmm_dealloc_block(uintptr_t ptr)
@@ -210,6 +214,13 @@ void setup_pmm(unsigned long boot_info_addr)
     extern char* _pmm_start;
     pmm_init((unsigned long) &_pmm_start, boot_info_addr);
     
+	int k = 0;
+
     pmm_init_available_mem(boot_info_addr);
-    pmm_deinit_used_spaces();
+    
+	int j = 0;
+
+	pmm_deinit_used_spaces();
+
+	int i = 0;
 }

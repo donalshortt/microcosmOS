@@ -9,5 +9,7 @@ set confirm off
 br mm/vmm/vmm.c:78
 
 #br core/kernel.c:31
+
+#br mm/pmm/pmm.c:216
 c
 

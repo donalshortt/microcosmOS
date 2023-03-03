@@ -5,7 +5,7 @@
 #include "vmm/vmm.h"
 #include "../util/types.h"
 
-#define MAIN_MEMORY_START  0x200000 // 2mb
+#define MAIN_MEMORY_START 0xFFFFFFFF81000000 // OS_VIRT_START + 0x600000 
 
 struct heap_metadata_element {
 	char free;

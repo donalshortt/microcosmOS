@@ -88,7 +88,7 @@ page_directory_table_loop:
 
 	inc %ecx
 	cmp %esi, %ecx
-	jne page_directory_table_loop  // if not equal redo loop
+	jne page_directory_table_loop
 
 	/* Point cr3 to pml4 */
 	movl $pml4, %eax
@@ -121,7 +121,7 @@ page_directory_table_loop:
 .type _start64, @function
 _start64:
         movw $0, %ax
-        // TODO: Check if necessary
+        /* TODO: Check if necessary */
         movw %ax, %ds
         movw %ax, %es
         movw %ax, %fs
@@ -132,7 +132,7 @@ _start64:
 
         call kernel_main
 
-        // Should never reach here
+        /* Should never reach here*/
         cli
         hlt
 1:
