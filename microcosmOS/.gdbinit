@@ -6,7 +6,7 @@ set confirm off
 #br core/kernel.c:42
 #br mm/mm.c:25
 
-br mm/vmm/vmm.c:78
+br mm/vmm/vmm.c:90
 
 #br core/kernel.c:31
 

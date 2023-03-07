@@ -19,7 +19,6 @@
 #define PAGE_MODE      0x4
 #define PAGE_ADDR      0xFFFFFFFFFFF000
 
-//TODO: Change to binary?
 #define PML4_GET_INDEX(x) (((x) >> 39) & 0x1ff)
 #define PDPT_GET_INDEX(x) (((x) >> 30) & 0x1ff)
 #define PD_GET_INDEX(x)   (((x) >> 21) & 0x1ff)
@@ -47,9 +46,9 @@ struct PT
 
 //struct PML4* CURRENT_PML4 = 0;
 
-void pe_set_flag(pe pe, uint64_t mask);
-void pe_del_flag(pe pe, uint64_t mask);
-void pe_set_addr(pe pe, uint64_t addr);
+uint64_t pe_set_flag(pe pe, uint64_t mask);
+uint64_t pe_del_flag(pe pe, uint64_t mask);
+uint64_t pe_set_addr(pe pe, uint64_t addr);
 
 int vmm_alloc_page(pte* pte);
 void vmm_dealloc_page(pte* pte);

@@ -1,12 +1,8 @@
 #include "vmm.h"
 
-inline void pe_set_flag(pe pe, uint64_t flag) { pe |= flag; };
-inline void pe_del_flag(pe pe, uint64_t flag) { pe &= ~flag; };
-inline void pe_set_addr(pe pe, uintptr_t addr)
-{ 
-    pe |= PAGE_ADDR; 
-    pe &= addr; 
-};
+inline uint64_t pe_set_flag(pe pe, uint64_t flag) { return pe |= flag; };
+inline uint64_t pe_del_flag(pe pe, uint64_t flag) { return pe &= ~flag; };
+inline uint64_t pe_set_addr(pe pe, uint64_t addr) { return pe |= addr << 12; };
 
 //TODO: Standardise return codes!
 /*int vmm_alloc_page(pte* pte)
@@ -92,49 +88,57 @@ void vmm_map_page(uintptr_t phys, uintptr_t virt)
     struct PT* pt = 0;
 
     if ((pml4->entries[pml4_i] & PAGE_PRESENT) != PAGE_PRESENT) {
-        pdpt = (struct PDPT*) pmm_alloc_block();
-        kmemset(pdpt, 0, PDPT_SIZE);
+		pdpt = (struct PDPT*) pmm_alloc_block();
+        //kmemset(pdpt, 0, PDPT_SIZE);
         
-        pml4e pml4e = pml4->entries[pml4_i];
+		pml4e pml4e = 0;
 
-        pe_set_flag(pml4e, PAGE_PRESENT);
-        pe_set_flag(pml4e, PAGE_WRITEABLE);
-        pe_set_addr(pml4e, (uint64_t)pdpt);
+		pml4e = pe_set_addr(pml4e, (uint64_t)pdpt);
+		pml4e = pe_set_flag(pml4e, PAGE_PRESENT);
+		pml4e = pe_set_flag(pml4e, PAGE_WRITEABLE);
+
+		pml4->entries[pml4_i] = pml4e;
     } else {
-        pdpt = (struct PDPT*)pml4->entries[pml4_i];
+		pdpt = (struct PDPT*)pml4->entries[pml4_i];
     }
 
     if ((pdpt->entries[pdpt_i] & PAGE_PRESENT) != PAGE_PRESENT) {
-        pd = (struct PD*) pmm_alloc_block();
-        kmemset(pd, 0, PD_SIZE);
+		pd = (struct PD*) pmm_alloc_block();
+        //kmemset(pd, 0, PD_SIZE);
         
-        pdpte pdpte = pdpt->entries[pdpt_i];
+		pdpte pdpte = 0;
 
-        pe_set_flag(pdpte, PAGE_PRESENT);
-        pe_set_flag(pdpte, PAGE_WRITEABLE);
-        pe_set_addr(pdpte, (uint64_t)pd);
+		pdpte = pe_set_addr(pdpte, (uint64_t)pd);
+		pdpte = pe_set_flag(pdpte, PAGE_PRESENT);
+		pdpte = pe_set_flag(pdpte, PAGE_WRITEABLE);
+
+		pdpt->entries[pdpt_i] = pdpte;
     } else {
-        pd = (struct PD*)pdpt->entries[pdpt_i];
+		pd = (struct PD*)pdpt->entries[pdpt_i];
     }
     
     if ((pd->entries[pd_i] & PAGE_PRESENT) != PAGE_PRESENT) {
-        pt = (struct PT*) pmm_alloc_block();
-        kmemset(pt, 0, PT_SIZE);
+		pt = (struct PT*) pmm_alloc_block();
+        //kmemset(pt, 0, PT_SIZE);
         
-        pde pde = pd->entries[pd_i];
+		pde pde = 0;
 
-        pe_set_flag(pde, PAGE_PRESENT);
-        pe_set_flag(pde, PAGE_WRITEABLE);
-        pe_set_addr(pde, (uint64_t)pt);
+		pde = pe_set_addr(pde, (uint64_t)pt);
+		pde = pe_set_flag(pde, PAGE_PRESENT);
+		pde = pe_set_flag(pde, PAGE_WRITEABLE);
+
+		pd->entries[pd_i] = pde;
     } else {
-        pt = (struct PT*)pd->entries[pd_i];
+		pt = (struct PT*)pd->entries[pd_i];
     }
 
-    pte pte = pt->entries[pt_i];
+	pte pte = 0;
 
-    pe_set_flag(pte, PAGE_PRESENT);
-    pe_set_flag(pte, PAGE_WRITEABLE);
-    pe_set_addr(pte,(uint64_t)phys);
+	pte = pe_set_addr(pte,(uint64_t)phys);
+	pte = pe_set_flag(pte, PAGE_PRESENT);
+	pte = pe_set_flag(pte, PAGE_WRITEABLE);
+
+	pt->entries[pt_i] = pte;
 
 	// TODO: don't flush the entire TLB
 	flush_tlb();
