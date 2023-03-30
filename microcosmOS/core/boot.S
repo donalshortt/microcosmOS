@@ -50,7 +50,6 @@ _start:
 	movl $tmp_stack + BOOT_STACK_SIZE, %esp
 
 	/* Set two entries in the PML4 table, each pointing to a pdpt */
-	/* TODO: why does it set an entry up for both physical and virtual?*/
 	movl $low_pdpt, %eax
 	or $(MMU_PRESENT | MMU_WRITABLE), %eax
 	movl %eax, pml4 + (PML4_ADDR_TO_ENTRY_INDEX(OS_PHYS_START) * PML4_ENTRY_SIZE)
@@ -74,13 +73,16 @@ _start:
 	/* esi should contain the number of pages we want*/
 	/* so this is just calculating the number of pages that we need based on the physical size of the kernel*/
 	movl $_kernel_physical_end, %esi
-	shrl $TWO_MEGABYTES_SHIFT, %esi // this divides
+	/*shrl $FOUR_KB_SHIFT, %esi // this divides*/
+	shrl $TWO_MEGABYTES_SHIFT, %esi
 	addl $1, %esi
 
 page_directory_table_loop:
 	movl $TWO_MEGABYTES, %eax
+	/*movl $FOUR_KB, %eax*/
 	mul %ecx
 	/* No. of pages calculated ^^^*/
+	/*or $(MMU_PRESENT | MMU_WRITABLE), %eax*/
 	or $(MMU_PRESENT | MMU_WRITABLE | MMU_PDE_TWO_MB), %eax
 	movl %eax, low_page_directory_table(, %ecx, PAGE_DIRECTORY_ENTRY_SIZE)
 	movl %eax, high_page_directory_table(, %ecx, PAGE_DIRECTORY_ENTRY_SIZE)

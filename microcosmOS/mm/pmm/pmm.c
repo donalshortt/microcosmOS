@@ -153,6 +153,7 @@ void pmm_deinit_used_spaces()
 
     pmm_deinit_space((unsigned long) &_kernel_physical_start, (unsigned long) &_kernel_size);
     pmm_deinit_space((unsigned long) &_pmm_start, pmm_state->pmmap_size);
+	pmm_deinit_space((unsigned long) 0x0, 0x500000);
 }
 
 long get_first_free_block()
@@ -191,7 +192,7 @@ uintptr_t pmm_alloc_block()
 
 	// TODO: remove this temporary fix
 	// -> i want to make sure im allocating memory that is not already mapped
-    return (index * BLOCK_SIZE + 0x1000000);
+    return (index * BLOCK_SIZE);
 }
 
 void pmm_dealloc_block(uintptr_t ptr)

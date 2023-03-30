@@ -17,6 +17,7 @@
 #define PAGE_PRESENT   0x1
 #define PAGE_WRITEABLE 0x2
 #define PAGE_MODE      0x4
+#define PAGE_2MB 	   (1 << 7)
 #define PAGE_ADDR      0xFFFFFFFFFFF000
 
 #define PML4_GET_INDEX(x) (((x) >> 39) & 0x1ff)

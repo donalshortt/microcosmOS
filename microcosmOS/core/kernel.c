@@ -20,8 +20,8 @@ int kernel_main(unsigned long boot_info_addr)
 
     setup_pmm(boot_info_addr);
 
-	uintptr_t phys = 0x4000000;
-	uintptr_t virt = 0x6000000;
+	uintptr_t phys = 0x600000;
+	uintptr_t virt = 0x600000;
 
 	vmm_map_page(phys, virt);
 
