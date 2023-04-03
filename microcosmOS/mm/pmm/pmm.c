@@ -151,7 +151,7 @@ void pmm_deinit_used_spaces()
     extern char* _kernel_size;
     extern char* _pmm_start;
 
-    pmm_deinit_space((unsigned long) &_kernel_physical_start, (unsigned long) &_kernel_size);
+    //pmm_deinit_space((unsigned long) &_kernel_physical_start, (unsigned long) &_kernel_size);
     pmm_deinit_space((unsigned long) &_pmm_start, pmm_state->pmmap_size);
 	pmm_deinit_space((unsigned long) 0x0, 0x600000);
 }

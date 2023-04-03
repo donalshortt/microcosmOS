@@ -76,7 +76,7 @@ void flush_tlb()
 
 // Sets up an entry for a virtual address
 // something is extremely fishy here
-void vmm_map_page(uintptr_t phys, uintptr_t virt)
+void vmm_map_page(uintptr_t virt)
 {   
 	//TODO: make sure the virt addr. is page-aligned
 	if (!virt % 0x1000 != 0)
@@ -97,6 +97,7 @@ void vmm_map_page(uintptr_t phys, uintptr_t virt)
 
     if ((pml4->entries[pml4_i] & PAGE_PRESENT) != PAGE_PRESENT) {
 		pdpt = (struct PDPT*) pmm_alloc_block();
+		vmm_map_page((uint64_t)pdpt);
 		kmemset(pdpt, 0, PDPT_SIZE);
         
 		pml4e pml4e = 0;
@@ -112,6 +113,7 @@ void vmm_map_page(uintptr_t phys, uintptr_t virt)
 
     if ((pdpt->entries[pdpt_i] & PAGE_PRESENT) != PAGE_PRESENT) {
 		pd = (struct PD*) pmm_alloc_block();
+		vmm_map_page((uint64_t)pd);
 		kmemset(pd, 0, PD_SIZE);
         
 		pdpte pdpte = 0;
@@ -127,7 +129,7 @@ void vmm_map_page(uintptr_t phys, uintptr_t virt)
     
     if ((pd->entries[pd_i] & PAGE_PRESENT) != PAGE_PRESENT) {
 		pt = (struct PT*) pmm_alloc_block();
-		//vmm_map_page(pt, kmalloc);??
+		vmm_map_page((uint64_t)pt);
 		kmemset(pt, 0, PT_SIZE);
         
 		pde pde = 0;
@@ -143,7 +145,7 @@ void vmm_map_page(uintptr_t phys, uintptr_t virt)
 
 	pte pte = 0;
 
-	pte = (uint64_t)phys;
+	pte = (uint64_t)pmm_alloc_block();
 	pte = pe_set_flag(pte, PAGE_PRESENT);
 	pte = pe_set_flag(pte, PAGE_WRITEABLE);
 
