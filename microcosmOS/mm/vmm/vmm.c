@@ -127,6 +127,7 @@ void vmm_map_page(uintptr_t phys, uintptr_t virt)
     
     if ((pd->entries[pd_i] & PAGE_PRESENT) != PAGE_PRESENT) {
 		pt = (struct PT*) pmm_alloc_block();
+		//vmm_map_page(pt, kmalloc);??
 		kmemset(pt, 0, PT_SIZE);
         
 		pde pde = 0;
@@ -134,21 +135,19 @@ void vmm_map_page(uintptr_t phys, uintptr_t virt)
 		pde = (uint64_t)pt;
 		pde = pe_set_flag(pde, PAGE_PRESENT);
 		pde = pe_set_flag(pde, PAGE_WRITEABLE);
-		pde = pe_set_flag(pde, PAGE_2MB);
 
 		pd->entries[pd_i] = pde;
     } else {
 		pt = (struct PT*) extract_phys_addr(pd->entries[pd_i]);
     }
 
-	//pte pte = 0;
+	pte pte = 0;
 
-	/*pte = pe_set_addr(pte,(uint64_t)phys);
+	pte = (uint64_t)phys;
 	pte = pe_set_flag(pte, PAGE_PRESENT);
 	pte = pe_set_flag(pte, PAGE_WRITEABLE);
-	pte = pe_set_flag(pte, PAGE_2MB);
 
-	pt->entries[pt_i] = pte;*/
+	pt->entries[pt_i] = pte;
 
 	// TODO: don't flush the entire TLB
 	flush_tlb();
