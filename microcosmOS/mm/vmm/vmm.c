@@ -74,6 +74,8 @@ void flush_tlb()
 
 #define extract_phys_addr(addr) (addr & 0xFFFFFF000)
 
+// POSSIBLE BUG: what if the address that i want to map gets mapped to a page table hierarchy structure before the mapping process can complete?!
+
 // Sets up an entry for a virtual address
 // something is extremely fishy here
 void vmm_map_page(uintptr_t virt)
@@ -97,8 +99,6 @@ void vmm_map_page(uintptr_t virt)
 
     if ((pml4->entries[pml4_i] & PAGE_PRESENT) != PAGE_PRESENT) {
 		pdpt = (struct PDPT*) pmm_alloc_block();
-		vmm_map_page((uint64_t)pdpt);
-		kmemset(pdpt, 0, PDPT_SIZE);
         
 		pml4e pml4e = 0;
 
@@ -107,14 +107,14 @@ void vmm_map_page(uintptr_t virt)
 		pml4e = pe_set_flag(pml4e, PAGE_WRITEABLE);
 
 		pml4->entries[pml4_i] = pml4e;
+		vmm_map_page((uint64_t)pdpt);
+		kmemset(pdpt, 0, PDPT_SIZE);
     } else {
 		pdpt = (struct PDPT*) extract_phys_addr(pml4->entries[pml4_i]);
     }
 
     if ((pdpt->entries[pdpt_i] & PAGE_PRESENT) != PAGE_PRESENT) {
 		pd = (struct PD*) pmm_alloc_block();
-		vmm_map_page((uint64_t)pd);
-		kmemset(pd, 0, PD_SIZE);
         
 		pdpte pdpte = 0;
 
@@ -123,14 +123,14 @@ void vmm_map_page(uintptr_t virt)
 		pdpte = pe_set_flag(pdpte, PAGE_WRITEABLE);
 
 		pdpt->entries[pdpt_i] = pdpte;
+		vmm_map_page((uint64_t)pd);
+		kmemset(pd, 0, PD_SIZE);
     } else {
 		pd = (struct PD*) extract_phys_addr(pdpt->entries[pdpt_i]);
     }
     
     if ((pd->entries[pd_i] & PAGE_PRESENT) != PAGE_PRESENT) {
 		pt = (struct PT*) pmm_alloc_block();
-		vmm_map_page((uint64_t)pt);
-		kmemset(pt, 0, PT_SIZE);
         
 		pde pde = 0;
 
@@ -139,6 +139,8 @@ void vmm_map_page(uintptr_t virt)
 		pde = pe_set_flag(pde, PAGE_WRITEABLE);
 
 		pd->entries[pd_i] = pde;
+		vmm_map_page((uint64_t)pt);
+		kmemset(pt, 0, PT_SIZE);
     } else {
 		pt = (struct PT*) extract_phys_addr(pd->entries[pd_i]);
     }
