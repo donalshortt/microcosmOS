@@ -1,4 +1,4 @@
-#include "pmm.h"pmm.c
+#include "pmm.h"
 
 struct PMM* pmm_state;
 
@@ -153,46 +153,53 @@ void pmm_deinit_used_spaces()
 
     //pmm_deinit_space((unsigned long) &_kernel_physical_start, (unsigned long) &_kernel_size);
     pmm_deinit_space((unsigned long) &_pmm_start, pmm_state->pmmap_size);
-	pmm_deinit_space((unsigned long) 0x0, 0x600000);
+	pmm_deinit_space((unsigned long) 0x0, 0x500000); // space for the initial identity mapping TODO: add the extra 0x100000, currently need the extra 0x100000 for debugging kmalloc
+	pmm_deinit_space((unsigned long) 0x600000, ONE_GiB); // space for paging structures
 }
 
-long get_first_free_block()
+long get_first_free_block(enum mem_zone zone)
 {
-    int extra_bits = pmm_state->pmmap_size % 64;
+	if (zone == heap) {
+		int extra_bits = pmm_state->pmmap_size % 64;
 
-    for (long i = 0; i < (pmm_state->pmmap_size / 64); i++) {
-        for (long j = 0; j < 64; j++) {
-            if (!(pmm_state->pmmap[i] & (1 << j)))
-                return (i * 64) + j;
-        }
-    }
+		for (long i = 0; i < (pmm_state->pmmap_size / 64); i++) {
+			for (long j = 0; j < 64; j++) {
+				if (!(pmm_state->pmmap[i] & (1 << j)))
+					return (i * 64) + j;
+			}
+		}
 
-    if (extra_bits) {
-        for (int i = 0; i < extra_bits; i++) {
-            if (!(pmm_state->pmmap[pmm_state->pmmap_size / 64] & (1 << i)))
-                return ((pmm_state->pmmap_size / 64) * 64) + i;
-        }
-    }
-        
-    return -1;
+		if (extra_bits) {
+			for (int i = 0; i < extra_bits; i++) {
+				if (!(pmm_state->pmmap[pmm_state->pmmap_size / 64] & (1 << i)))
+					return ((pmm_state->pmmap_size / 64) * 64) + i;
+			}
+		}
+			
+		return -1;
+	} else {
+
+	}
 }
 
-uintptr_t pmm_alloc_block()
+uintptr_t pmm_alloc_block(enum mem_zone zone)
 {
-    if (pmm_state->max_blocks - pmm_state->used_blocks <= 0) {
-        /* TODO: ERROR no mem */
-        return NULL;
-    }
+	if (zone == heap) {
+		if (pmm_state->max_blocks - pmm_state->used_blocks <= 0) {
+			/* TODO: ERROR no mem */
+			return NULL;
+		}
 
-    uintptr_t index = get_first_free_block();    
+		uintptr_t index = get_first_free_block(heap);    
 
-    bit_set(pmm_state->pmmap, index);
+		bit_set(pmm_state->pmmap, index);
 
-    pmm_state->used_blocks++;
+		pmm_state->used_blocks++;
 
-	// TODO: remove this temporary fix
-	// -> i want to make sure im allocating memory that is not already mapped
-    return (index * BLOCK_SIZE);
+		return (index * BLOCK_SIZE);
+	} else {
+		
+	}
 }
 
 void pmm_dealloc_block(uintptr_t ptr)
@@ -214,14 +221,6 @@ void setup_pmm(unsigned long boot_info_addr)
 
     extern char* _pmm_start;
     pmm_init((unsigned long) &_pmm_start, boot_info_addr);
-    
-	int k = 0;
-
     pmm_init_available_mem(boot_info_addr);
-    
-	int j = 0;
-
 	pmm_deinit_used_spaces();
-
-	int i = 0;
 }

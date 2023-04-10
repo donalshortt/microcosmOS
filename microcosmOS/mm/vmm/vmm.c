@@ -75,9 +75,8 @@ void flush_tlb()
 #define extract_phys_addr(addr) (addr & 0xFFFFFF000)
 
 // POSSIBLE BUG: what if the address that i want to map gets mapped to a page table hierarchy structure before the mapping process can complete?!
+// POSSIBLE BUG: what if while in the process of allocing some memory, a page table structure is inserted in the middle of it? phys mem needs to be contiguous
 
-// Sets up an entry for a virtual address
-// something is extremely fishy here
 void vmm_map_page(uintptr_t virt)
 {   
 	//TODO: make sure the virt addr. is page-aligned
