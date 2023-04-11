@@ -39,7 +39,7 @@ int pmm_run_tests()
 int test_alloc()
 {
 	void* expected_address = (void*) (get_first_free_block() * BLOCK_SIZE);
-	uintptr_t block_address = pmm_alloc_block();
+	uintptr_t block_address = pmm_alloc_block(heap);
 
 	return assert_eq((long)expected_address, (long)block_address);
 }
@@ -48,7 +48,7 @@ int test_alloc_and_free()
 {
 	void* addr1 = (void*) (get_first_free_block() * BLOCK_SIZE);
 	
-	uintptr_t block_addr = pmm_alloc_block();
+	uintptr_t block_addr = pmm_alloc_block(heap);
 	pmm_dealloc_block(block_addr);
 	
 	void* addr2 = (void*) (get_first_free_block() * BLOCK_SIZE);
@@ -60,9 +60,9 @@ int test_alloc_freed()
 {
 	void* expected_address = (void*) (get_first_free_block() * BLOCK_SIZE);
 
-	uintptr_t block_addr1 = pmm_alloc_block();
+	uintptr_t block_addr1 = pmm_alloc_block(heap);
 	pmm_dealloc_block(block_addr1);
-	uintptr_t block_addr2 = pmm_alloc_block();
+	uintptr_t block_addr2 = pmm_alloc_block(heap);
 
 	return assert_eq((long) expected_address, (long) block_addr2);
 }
@@ -70,12 +70,12 @@ int test_alloc_freed()
 int test_alloc_two_free_one()
 {
 	pmm_alloc_block();
-	void* ff_addr1 = (void*) (get_first_free_block() * BLOCK_SIZE);
+	void* ff_addr1 = (void*) (get_first_free_block(heap) * BLOCK_SIZE);
 
 	uintptr_t addr2 = pmm_alloc_block();
 	pmm_dealloc_block(addr2);
 
-	void* ff_addr2 = (void*) (get_first_free_block() * BLOCK_SIZE);
+	void* ff_addr2 = (void*) (get_first_free_block(heap) * BLOCK_SIZE);
 
 	return assert_eq((long) ff_addr1, (long) ff_addr2);
 }
@@ -85,7 +85,7 @@ int test_alloc_1000_free_1000()
 	int used_before = pmm_state->used_blocks;
 
 	for (long i = 0; i < 1000; i++) {
-		pmm_alloc_block();
+		pmm_alloc_block(heap);
 	}
 	
 	int used_after = pmm_state->used_blocks;
@@ -102,7 +102,7 @@ int test_alloc_all_free_all()
 {
 /*
 	for (long i = 0; i < pmm_state->max_blocks; i++) {
-		pmm_alloc_block();
+		pmm_alloc_block(heap);
 	}
 
 	if (assert_eq(pmm_state->max_blocks - pmm_state->used_blocks, 0) == -1) {

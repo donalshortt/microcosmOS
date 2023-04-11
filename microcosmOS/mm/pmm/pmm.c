@@ -157,6 +157,7 @@ void pmm_deinit_used_spaces()
 	pmm_deinit_space((unsigned long) 0x600000, ONE_GiB); // space for paging structures
 }
 
+//TODO: maybe check extra_bits first
 long get_first_free_block(enum mem_zone zone)
 {
 	if (zone == heap) {

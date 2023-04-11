@@ -77,6 +77,8 @@ void flush_tlb()
 // POSSIBLE BUG: what if the address that i want to map gets mapped to a page table hierarchy structure before the mapping process can complete?!
 // POSSIBLE BUG: what if while in the process of allocing some memory, a page table structure is inserted in the middle of it? phys mem needs to be contiguous
 
+//TODO: switch pmm_alloc_block(page) with kmalloc(page)
+
 void vmm_map_page(uintptr_t virt)
 {   
 	//TODO: make sure the virt addr. is page-aligned
@@ -97,7 +99,7 @@ void vmm_map_page(uintptr_t virt)
     struct PT* pt = 0;
 
     if ((pml4->entries[pml4_i] & PAGE_PRESENT) != PAGE_PRESENT) {
-		pdpt = (struct PDPT*) pmm_alloc_block();
+		pdpt = (struct PDPT*) pmm_alloc_block(page);
         
 		pml4e pml4e = 0;
 
@@ -113,7 +115,7 @@ void vmm_map_page(uintptr_t virt)
     }
 
     if ((pdpt->entries[pdpt_i] & PAGE_PRESENT) != PAGE_PRESENT) {
-		pd = (struct PD*) pmm_alloc_block();
+		pd = (struct PD*) pmm_alloc_block(page);
         
 		pdpte pdpte = 0;
 
@@ -129,7 +131,7 @@ void vmm_map_page(uintptr_t virt)
     }
     
     if ((pd->entries[pd_i] & PAGE_PRESENT) != PAGE_PRESENT) {
-		pt = (struct PT*) pmm_alloc_block();
+		pt = (struct PT*) pmm_alloc_block(page);
         
 		pde pde = 0;
 
