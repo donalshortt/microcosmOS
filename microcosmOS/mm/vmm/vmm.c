@@ -1,4 +1,5 @@
 #include "vmm.h"
+#include "../pmm/pmm.h"
 
 uint64_t pe_set_flag(pe pe, uint64_t flag) { return pe |= flag; };
 uint64_t pe_del_flag(pe pe, uint64_t flag) { return pe &= ~flag; };
@@ -79,7 +80,7 @@ void flush_tlb()
 
 //TODO: switch pmm_alloc_block(page) with kmalloc(page)
 
-void vmm_map_page(uintptr_t virt)
+void vmm_map_page(uintptr_t phys, uintptr_t virt)
 {   
 	//TODO: make sure the virt addr. is page-aligned
 	if (!virt % 0x1000 != 0)
@@ -108,7 +109,7 @@ void vmm_map_page(uintptr_t virt)
 		pml4e = pe_set_flag(pml4e, PAGE_WRITEABLE);
 
 		pml4->entries[pml4_i] = pml4e;
-		vmm_map_page((uint64_t)pdpt);
+		vmm_map_page((uint64_t)pdpt, get_first_free_block(page));
 		kmemset(pdpt, 0, PDPT_SIZE);
     } else {
 		pdpt = (struct PDPT*) extract_phys_addr(pml4->entries[pml4_i]);
@@ -124,7 +125,7 @@ void vmm_map_page(uintptr_t virt)
 		pdpte = pe_set_flag(pdpte, PAGE_WRITEABLE);
 
 		pdpt->entries[pdpt_i] = pdpte;
-		vmm_map_page((uint64_t)pd);
+		vmm_map_page((uint64_t)pd, get_first_free_block(page));
 		kmemset(pd, 0, PD_SIZE);
     } else {
 		pd = (struct PD*) extract_phys_addr(pdpt->entries[pdpt_i]);
@@ -140,7 +141,7 @@ void vmm_map_page(uintptr_t virt)
 		pde = pe_set_flag(pde, PAGE_WRITEABLE);
 
 		pd->entries[pd_i] = pde;
-		vmm_map_page((uint64_t)pt);
+		vmm_map_page((uint64_t)pt, get_first_free_block(page));
 		kmemset(pt, 0, PT_SIZE);
     } else {
 		pt = (struct PT*) extract_phys_addr(pd->entries[pd_i]);
@@ -148,7 +149,7 @@ void vmm_map_page(uintptr_t virt)
 
 	pte pte = 0;
 
-	pte = (uint64_t)pmm_alloc_block(heap);
+	pte = phys;
 	pte = pe_set_flag(pte, PAGE_PRESENT);
 	pte = pe_set_flag(pte, PAGE_WRITEABLE);
 

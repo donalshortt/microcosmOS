@@ -63,7 +63,7 @@ int vmm_switch_pml4(struct PML4* pml4);
 
 void vmm_remove_tlbe(vaddr vaddr);
 
-void vmm_map_page(uint64_t virt);
+void vmm_map_page(uintptr_t phys, uintptr_t virt);
 
 void vmm_init();
 

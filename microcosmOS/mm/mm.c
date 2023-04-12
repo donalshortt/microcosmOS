@@ -1,4 +1,3 @@
-#include "mm.h"
 #include "pmm/pmm.h"
 #include "vmm/vmm.h"
 
@@ -9,11 +8,11 @@ struct heap_block {
 	uintptr_t data;
 };
 
-struct heap_block* heap = {0};
+struct heap_block* k_heap;
 
 struct heap_block* find_first_fit(int size)
 {
-	struct heap_block* current_block = heap;
+	struct heap_block* current_block = k_heap;
 
 	while (current_block->next != NULL) {
 		if (current_block->size > size) {
@@ -28,7 +27,7 @@ struct heap_block* find_first_fit(int size)
 
 void heap_init()
 {
-	if (heap->data == 0) {
+	if (k_heap->data == 0) {
 		int wow = 42;
 	} else {
 		int sadwow = 24;
@@ -37,9 +36,9 @@ void heap_init()
 
 void* kmalloc(int size)
 {
-	if (heap->data == 0) {
+	if (k_heap->data == 0) {
 		uintptr_t frame_addr = pmm_alloc_block(heap);
-		vmm_map_page(frame_addr);
+		vmm_map_page(frame_addr, get_first_free_block(heap));
 
 		struct heap_block* metadata = (struct heap_block*) MAIN_MEMORY_START;
 		metadata->size = size;
