@@ -148,7 +148,7 @@ void vmm_map_page(uintptr_t virt)
 
 	pte pte = 0;
 
-	pte = (uint64_t)pmm_alloc_block();
+	pte = (uint64_t)pmm_alloc_block(heap);
 	pte = pe_set_flag(pte, PAGE_PRESENT);
 	pte = pe_set_flag(pte, PAGE_WRITEABLE);
 

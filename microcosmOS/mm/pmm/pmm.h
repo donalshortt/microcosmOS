@@ -27,6 +27,6 @@ void setup_pmm(unsigned long boot_info_addr);
 uintptr_t pmm_alloc_block(enum mem_zone);
 void pmm_dealloc_block(uintptr_t ptr);
 
-long get_first_free_block();
+long get_first_free_block(enum mem_zone);
 
 #endif
