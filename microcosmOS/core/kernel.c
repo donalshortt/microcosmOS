@@ -20,45 +20,11 @@ int kernel_main(unsigned long boot_info_addr)
 
     setup_pmm(boot_info_addr);
 
-	uintptr_t virt = 0x800000;
-
-	vmm_map_page(virt);
-
-	virt = 0x1200000;
-
-	vmm_map_page(virt);
-
-	uintptr_t* test = (uintptr_t*)0x6000000;
-	*test = 42;
-
-	int i = 0;
-
-	//void* test = kmalloc(8193);
-	//kmemset(test, 1, 8193);
-	//
-	//uintptr_t paddr = pmm_alloc_block();
-	//vmm_map_page(paddr, MAIN_MEMORY_START);
-	//long* ptr = (long*)MAIN_MEMORY_START;
-	//*ptr = 42;
-	//
-	
-	/*struct myStruct {
-		int wow;
-		int weewoo;
-	};
-	
-	uintptr_t paddr = pmm_alloc_block();
-	vmm_map_page(paddr, MAIN_MEMORY_START);
-	struct myStruct* myStruct = (struct myStruct*)MAIN_MEMORY_START;
-	myStruct->wow = 42;
-	myStruct->weewoo = 42;
-
-	int i = 1;*/
+	run_tests();
 
 	heap_init();
 
-	run_tests();
-
+	int wow = 1;
     while(1);
     
     panic:
