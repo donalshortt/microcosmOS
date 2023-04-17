@@ -36,7 +36,7 @@ void heap_init()
 
 void* kmalloc(int size)
 {
-	if (k_heap->data == 0) {
+	if (k_heap == 0) {
 		uintptr_t frame_addr = pmm_alloc_block(heap);
 		vmm_map_page(frame_addr, MAIN_MEMORY_START);
 
@@ -56,6 +56,8 @@ void* kmalloc(int size)
 		}
 
 		return (void*)metadata->data;
+	} else {
+
 	}
 
 	return 0;

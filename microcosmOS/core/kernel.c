@@ -19,12 +19,14 @@ int kernel_main(unsigned long boot_info_addr)
 
     setup_pmm(boot_info_addr);
 
-	uintptr_t phys = 0x40603000;
+	/*uintptr_t phys = 0x40603000;
 	uintptr_t virt = 0x60000000;
 	vmm_map_page(phys, virt);
 
 	uintptr_t* ptr = (uintptr_t*)virt;
-	*ptr = 42;
+	*ptr = 42;*/
+
+	void* ptr = kmalloc(10000);
 
 	run_tests();
 
