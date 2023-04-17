@@ -199,9 +199,9 @@ uintptr_t pmm_alloc_block(enum mem_zone zone)
 	uintptr_t index = 0;
 
 	if (zone == heap) {
-		uintptr_t index = get_first_free_block(heap);    
+		index = get_first_free_block(heap);    
 	} else {
-		uintptr_t index = get_first_free_block(page);
+		index = get_first_free_block(page);
 	}
 
 	bit_set(pmm_state->pmmap, index);

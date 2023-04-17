@@ -38,7 +38,7 @@ void* kmalloc(int size)
 {
 	if (k_heap->data == 0) {
 		uintptr_t frame_addr = pmm_alloc_block(heap);
-		vmm_map_page(frame_addr, get_first_free_block(heap));
+		vmm_map_page(frame_addr, MAIN_MEMORY_START);
 
 		struct heap_block* metadata = (struct heap_block*) MAIN_MEMORY_START;
 		metadata->size = size;
@@ -52,7 +52,7 @@ void* kmalloc(int size)
 		
 		for (int i = 0; i < no_blocks; i++) {
 			frame_addr = pmm_alloc_block(heap);
-			//vmm_map_page(frame_addr, (MAIN_MEMORY_START + i * 0x1000));
+			vmm_map_page(frame_addr, metadata->data + (BLOCK_SIZE * i));
 		}
 
 		return (void*)metadata->data;
