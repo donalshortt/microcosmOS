@@ -13,5 +13,7 @@ typedef uint64_t vaddr;
 typedef uint64_t uintptr_t;
 
 #define NULL 0
+#define TRUE 1
+#define FALSE 0
 
 #endif

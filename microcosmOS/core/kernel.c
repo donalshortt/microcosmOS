@@ -26,7 +26,14 @@ int kernel_main(unsigned long boot_info_addr)
 	uintptr_t* ptr = (uintptr_t*)virt;
 	*ptr = 42;*/
 
-	void* ptr = kmalloc(10000);
+	int* ptr = kmalloc(10000);
+	*ptr = 42;
+
+	int* ptr2 = kmalloc(sizeof(int));
+	*ptr2 = 101;
+
+	int* ptr3 = kmalloc(4);
+	*ptr3 = 128;
 
 	run_tests();
 
