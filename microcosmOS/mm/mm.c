@@ -26,6 +26,18 @@ struct heap_block* find_first_fit(int size)
 	return NULL;
 }
 
+void add_heap_block(struct heap_block* heap_block)
+{
+	struct heap_block* current_block = k_heap;
+
+	while (current_block != 0) {
+		if (current_block->next == NULL) {
+			current_block->next = heap_block;
+			return;
+		}
+	}
+}
+
 uintptr_t get_heap_end()
 {
 	struct heap_block* current_block = k_heap;
@@ -94,6 +106,8 @@ void* kmalloc(int size)
 			frame_addr = pmm_alloc_block(heap);
 			vmm_map_page(frame_addr, metadata->data + (BLOCK_SIZE * i));
 		}
+
+		add_heap_block(metadata);
 
 		return (void*)metadata->data;
 	}
