@@ -27,6 +27,7 @@ struct heap_metadata {
 };
 
 void* kmalloc(int size);
+void kfree(void* ptr);
 
 void heap_init();
 

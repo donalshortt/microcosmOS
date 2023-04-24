@@ -7,6 +7,8 @@ void test_ok(Suite suite)
 		case (PMM):
 			print_string("OK pmm", 11, VGA_GREEN);
 			break;
+		case (VMM):
+			print_string("OK vmm", 12, VGA_GREEN);
 		default:
 			return;
 	}
@@ -16,6 +18,10 @@ void run_tests()
 {
 	if (pmm_run_tests() == 0) {
 		test_ok(PMM);
+	}
+
+	if (vmm_run_tests() == 0) {
+		test_ok(VMM);
 	}
 }
 
@@ -40,6 +46,12 @@ void fail(Test test)
 			break;
 		case PMM_ALLOC_ALL_FREE_ALL:
 			print_string("FAIL pmm - alloc_all_free_all", 10, VGA_RED);
+			break;
+		case VMM_MALLOC:
+			print_string("FAIL vmm - malloc", 10, VGA_RED);
+			break;
+		case VMM_MALLOC_AND_FREE_AND_MALLOC:
+			print_string("FAIL vmm- malloc_and_free_and_malloc", 10, VGA_RED);
 			break;
 	}
 }

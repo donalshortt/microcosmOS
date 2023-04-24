@@ -51,15 +51,6 @@ uintptr_t get_heap_end()
 	return current_block->data + current_block->size;
 }
 
-void heap_init()
-{
-	if (k_heap->data == 0) {
-		int wow = 42;
-	} else {
-		int sadwow = 24;
-	}
-}
-
 //TODO: clean up this function jesuuuuuuuus
 void* kmalloc(int size)
 {
@@ -119,5 +110,6 @@ void* kmalloc(int size)
 
 void kfree(void* ptr)
 {
-
+	struct heap_block* metadata = (struct heap_block*)(ptr - BLOCK_SIZE);
+	metadata->is_free = TRUE;
 }

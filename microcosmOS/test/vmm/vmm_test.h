@@ -9,4 +9,7 @@
 
 int vmm_run_tests();
 
+int test_kmalloc();
+int test_kmalloc_and_free_and_kmalloc();
+
 #endif
