@@ -12,5 +12,7 @@ br core/kernel.c:29
 
 #br test/pmm/pmm_test.c:41
 
+tui enable
+
 c
 

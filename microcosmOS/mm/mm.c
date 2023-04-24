@@ -9,7 +9,7 @@ struct heap_block {
 	uintptr_t data;
 };
 
-struct heap_block* k_heap = 0;
+struct heap_block* k_heap = NULL;
 
 struct heap_block* find_first_fit(int size)
 {
@@ -30,11 +30,13 @@ void add_heap_block(struct heap_block* heap_block)
 {
 	struct heap_block* current_block = k_heap;
 
-	while (current_block != 0) {
+	while (current_block != NULL) {
 		if (current_block->next == NULL) {
 			current_block->next = heap_block;
 			return;
 		}
+
+		current_block = current_block->next;
 	}
 }
 
@@ -65,7 +67,7 @@ void* kmalloc(int size)
 	if (size % 4096 != 0) 
 		no_blocks++;
 
-	if (k_heap == 0) {
+	if (k_heap == NULL) {
 		uintptr_t frame_addr = pmm_alloc_block(heap);
 		vmm_map_page(frame_addr, MAIN_MEMORY_START);
 
