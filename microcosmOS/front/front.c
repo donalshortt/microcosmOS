@@ -11,11 +11,6 @@ void print_string(const char *str, int line, int colour)
     }
 }
 
-void print_phys()
-{
-
-}
-
 void print_name(void)
 {
     print_string("              _                                           ____  _____", 0, VGA_LIGHT_GRAY);

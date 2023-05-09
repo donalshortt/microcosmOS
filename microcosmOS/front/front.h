@@ -9,6 +9,5 @@
 void print_string(const char *str, int line, int colour);
 
 void print_name(void);
-void print_phys(void);
 
 #endif
