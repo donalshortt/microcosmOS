@@ -1,23 +1,44 @@
 #include "../front/front.h"
+#include "../util/util.h"
+#include "../vulns/vulns.h"
 
 void get_average_time_main_mem()
-{
+{	
+	unsigned long average = 0;
+	char* addr = "0x400000";
+
+	for (int i = 0; i < 10000; i++) {
+		average += probe_main_mem(addr);
+	}
+
+	average = average / 10000;
 	
+	char* output;
+	itoa(average, output);
+
+	print_string(output, 20, VGA_LIGHT_GRAY);
 }
 
 void get_average_time_l1()
 {
-	unsigned long average;
+	unsigned long average = 0;
+	char* addr = "0x400000";
 
 	for (int i = 0; i < 10000; i++) {
-		average += probe_l1();
+		average += probe_l1(addr);
 	}
 
-	print_string("AVERAGE L1 TIME:" + average.itoa(), 20, VGA_LIGHT_GRAY);
+	average = average / 10000;
+	
+	char* output;
+	itoa(average, output);
+
+	print_string(output, 21, VGA_LIGHT_GRAY);
 }
 
-int probe_main_mem(char *adrs) {
-	const float threshold = 0.42;
+//QUESTION: why does the ip get lost when when the "threshold" var is uncommented?
+int probe_main_mem(char* addr) {
+	//const float threshold = 0.42;
 
 	volatile unsigned long time;
 
@@ -33,14 +54,14 @@ int probe_main_mem(char *adrs) {
 		" subl %%esi, %%eax \n"
 		" clflush 0(%1) \n"
 		: "=a" (time)
-		: "c" (adrs)
+		: "c" (addr)
 		: "%esi", "%edx");
 	
 	return time;
 }
 
-int probe_l1(char *adrs) {
-	const float threshold = 0.42;
+int probe_l1(char* addr) {
+	//const float threshold = 0.42;
 
 	volatile unsigned long time;
 
@@ -55,7 +76,7 @@ int probe_l1(char *adrs) {
 		" rdtsc \n"
 		" subl %%esi, %%eax \n"
 		: "=a" (time)
-		: "c" (adrs)
+		: "c" (addr)
 		: "%esi", "%edx");
 	
 	return time;

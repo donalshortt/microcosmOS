@@ -5,6 +5,7 @@
 #include "../front/front.h"
 #include "../util/types.h"
 #include "../test/test.h"
+#include "../vulns/vulns.h"
 
 int kernel_main(unsigned long boot_info_addr)
 {
@@ -20,6 +21,9 @@ int kernel_main(unsigned long boot_info_addr)
 	setup_pmm(boot_info_addr);
 
 	run_tests();
+
+	get_average_time_l1();
+	get_average_time_main_mem();
 
 	int wow = 1;
 	while(1);
