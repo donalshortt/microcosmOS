@@ -151,10 +151,10 @@ void pmm_deinit_used_spaces()
     extern char* _kernel_size;
     extern char* _pmm_start;
 
-    //pmm_deinit_space((unsigned long) &_kernel_physical_start, (unsigned long) &_kernel_size);
+    pmm_deinit_space((unsigned long) &_kernel_physical_start, (unsigned long) &_kernel_size);
     pmm_deinit_space((unsigned long) &_pmm_start, pmm_state->pmmap_size); //TODO: analyse this, i think there's something fishy here
 	pmm_deinit_space((unsigned long) 0x0, 0x500000); // space for the initial identity mapping TODO: add the extra 0x100000, currently need the extra 0x100000 for debugging kmalloc
-	//pmm_deinit_space((unsigned long) 0x600000, ONE_GiB); // space for paging structures -- we dont want to deinit though, cause they will still be used, just not for the heap
+	pmm_deinit_space((unsigned long) 0x600000, ONE_GiB); // space for paging structures -- we dont want to deinit though, cause they will still be used, just not for the heap
 }
 
 //TODO: maybe check extra_bits first

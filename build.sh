@@ -51,19 +51,19 @@ compile()
 {
     cd microcosmOS
 
-    $CC $SHARED_FLAGS -O2 -c -o kernel.o core/kernel.c
-    $CC $SHARED_FLAGS -O2 -c -o boot.o core/boot.S
-    $CC $SHARED_FLAGS -O2 -c -o pmm.o mm/pmm/pmm.c
-    $CC $SHARED_FLAGS -O2 -c -o vmm.o mm/vmm/vmm.c
-    $CC $SHARED_FLAGS -O2 -c -o mm.o mm/mm.c
-    $CC $SHARED_FLAGS -O2 -c -o front.o front/front.c
-    $CC $SHARED_FLAGS -O2 -c -o test.o test/test.c
-	$CC $SHARED_FLAGS -O2 -c -o pmm_test.o test/pmm/pmm_test.c
-	$CC $SHARED_FLAGS -O2 -c -o vmm_test.o test/vmm/vmm_test.c
-	$CC $SHARED_FLAGS -O2 -c -o vulns.o vulns/vulns.c
-	$CC $SHARED_FLAGS -O2 -c -o util.o util/util.c
+    $CC $SHARED_FLAGS -O0 -c -o kernel.o core/kernel.c
+    $CC $SHARED_FLAGS -O0 -c -o boot.o core/boot.S
+    $CC $SHARED_FLAGS -O0 -c -o pmm.o mm/pmm/pmm.c
+    $CC $SHARED_FLAGS -O0 -c -o vmm.o mm/vmm/vmm.c
+    $CC $SHARED_FLAGS -O0 -c -o mm.o mm/mm.c
+    $CC $SHARED_FLAGS -O0 -c -o front.o front/front.c
+    $CC $SHARED_FLAGS -O0 -c -o test.o test/test.c
+	$CC $SHARED_FLAGS -O0 -c -o pmm_test.o test/pmm/pmm_test.c
+	$CC $SHARED_FLAGS -O0 -c -o vmm_test.o test/vmm/vmm_test.c
+	$CC $SHARED_FLAGS -O0 -c -o vulns.o vulns/vulns.c
+	$CC $SHARED_FLAGS -O0 -c -o util.o util/util.c
     
-	$CC $SHARED_FLAGS -O2 -z -W1,--build-id=none -T core/kernel.ld -o kernel $OBJECTS
+	$CC $SHARED_FLAGS -O0 -z -W1,--build-id=none -T core/kernel.ld -o kernel $OBJECTS
     
     cd ../
 }
@@ -104,7 +104,7 @@ qemu()
 
     move_to_build_and_remove_dfiles
 
-    qemu-system-x86_64 -cdrom $ISO -serial stdio -m $MEM
+    qemu-system-x86_64 -accel kvm -cdrom $ISO -serial stdio -m $MEM
 }
 
 compile_without_run()

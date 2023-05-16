@@ -1,8 +1,8 @@
 #ifndef __VULNS_H__
 #define __VULNS_H__
 
-void get_average_time_l1();
-void get_average_time_main_mem();
+unsigned long get_average_time_l1();
+unsigned long get_average_time_main_mem();
 
 
 int probe_main_mem(char* addr);

@@ -2,38 +2,42 @@
 #include "../util/util.h"
 #include "../vulns/vulns.h"
 
-void get_average_time_main_mem()
+unsigned long get_average_time_main_mem()
 {	
 	unsigned long average = 0;
 	char* addr = "0x400000";
 
-	for (int i = 0; i < 10000; i++) {
+	for (int i = 0; i < 100000; i++) {
 		average += probe_main_mem(addr);
 	}
 
-	average = average / 10000;
+	average = average / 100000;
 	
 	char* output;
 	itoa(average, output);
 
 	print_string(output, 20, VGA_LIGHT_GRAY);
+
+	return average;
 }
 
-void get_average_time_l1()
+unsigned long get_average_time_l1()
 {
 	unsigned long average = 0;
 	char* addr = "0x400000";
 
-	for (int i = 0; i < 10000; i++) {
+	for (int i = 0; i < 100000; i++) {
 		average += probe_l1(addr);
 	}
 
-	average = average / 10000;
+	average = average / 100000;
 	
 	char* output;
 	itoa(average, output);
 
 	print_string(output, 21, VGA_LIGHT_GRAY);
+
+	return average;
 }
 
 //QUESTION: why does the ip get lost when when the "threshold" var is uncommented?

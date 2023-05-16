@@ -22,8 +22,8 @@ int kernel_main(unsigned long boot_info_addr)
 
 	run_tests();
 
-	get_average_time_l1();
-	get_average_time_main_mem();
+	unsigned long l1_average = get_average_time_l1();
+	unsigned long main_mem_average = get_average_time_main_mem();
 
 	int wow = 1;
 	while(1);
