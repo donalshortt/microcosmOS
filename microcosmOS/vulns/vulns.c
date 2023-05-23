@@ -13,7 +13,7 @@ unsigned long get_average_time_main_mem()
 
 	average = average / 100000;
 	
-	char* output;
+	char* output = "";
 	itoa(average, output);
 
 	print_string(output, 20, VGA_LIGHT_GRAY);
@@ -32,7 +32,7 @@ unsigned long get_average_time_l1()
 
 	average = average / 100000;
 	
-	char* output;
+	char* output = "";
 	itoa(average, output);
 
 	print_string(output, 21, VGA_LIGHT_GRAY);
