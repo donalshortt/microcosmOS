@@ -10,8 +10,6 @@
 #define ONE_MiB 0x100000
 #define ONE_GiB 0x40000000
 
-#define HEAP_ZONE_START 4120 //the start of the heap zone, expressed in no. of qwords (each qword holds status info on 64 blocks) 
-
 struct PMM
 {
     unsigned long mem_size;

@@ -15,6 +15,7 @@ usage()
     echo "-d Build and launch debug mode in qemu (gdb)"
     echo "-q Build and launch normally in qemu"
     echo "-m Sets mem usage for qemu. Format: XXXXY"
+	echo "-w Compile without running"
     echo "    X = Mem amount - Y = M/G, etc."
 }
 
