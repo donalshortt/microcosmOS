@@ -41,7 +41,7 @@ compile_debug()
     $CC $SHARED_FLAGS -O0 -ggdb -c -o pmm_test.o test/pmm/pmm_test.c
 	$CC $SHARED_FLAGS -O0 -ggdb -c -o vmm_test.o test/vmm/vmm_test.c
 	$CC $SHARED_FLAGS -O0 -ggdb -c -o vulns.o vulns/vulns.c
-	$CC $SHARED_FLAGS -O0 -ggdb -c -o vulns.o vulns/spectre.c
+	$CC $SHARED_FLAGS -O0 -ggdb -c -o spectre.o vulns/spectre.c
 	$CC $SHARED_FLAGS -O0 -ggdb -c -o util.o util/util.c
     
 	$CC $SHARED_FLAGS -O0 -ggdb -z -W1,--build-id=none -T core/kernel.ld -o kernel $OBJECTS
@@ -63,7 +63,7 @@ compile()
 	$CC $SHARED_FLAGS -O0 -c -o pmm_test.o test/pmm/pmm_test.c
 	$CC $SHARED_FLAGS -O0 -c -o vmm_test.o test/vmm/vmm_test.c
 	$CC $SHARED_FLAGS -O0 -c -o vulns.o vulns/vulns.c
-	$CC $SHARED_FLAGS -O0 -c -o vulns.o vulns/spectre.c
+	$CC $SHARED_FLAGS -O0 -c -o spectre.o vulns/spectre.c
 	$CC $SHARED_FLAGS -O0 -c -o util.o util/util.c
     
 	$CC $SHARED_FLAGS -O0 -z -W1,--build-id=none -T core/kernel.ld -o kernel $OBJECTS
