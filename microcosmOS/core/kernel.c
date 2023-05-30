@@ -6,6 +6,7 @@
 #include "../util/types.h"
 #include "../test/test.h"
 #include "../vulns/vulns.h"
+#include "../vulns/flush_reload/flush_reload.h"
 
 int kernel_main(unsigned long boot_info_addr)
 {
@@ -22,10 +23,8 @@ int kernel_main(unsigned long boot_info_addr)
 
 	run_tests();
 
-	unsigned long l1_average = get_average_time_l1();
-	unsigned long main_mem_average = get_average_time_main_mem();
+	flush_reload();
 
-	int wow = 1;
 	while(1);
     
 	panic:

@@ -4,7 +4,8 @@ set print pretty on
 set confirm off
 source /home/donal/repos/gdb-pt-dump/pt.py
 
-br core/kernel.c:25
+#br vulns/flush_reloead/flush_reload.c:48
+br core/kernel.c:29
 
 #br vulns/vulns.c:10
 

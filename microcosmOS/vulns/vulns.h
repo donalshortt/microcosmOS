@@ -8,4 +8,8 @@ unsigned long get_average_time_main_mem();
 int probe_main_mem(char* addr);
 int probe_l1(char* addr);
 
+void flush(char* addr);
+
+int determine_threshold();
+
 #endif

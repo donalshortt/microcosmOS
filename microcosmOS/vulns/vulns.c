@@ -40,10 +40,7 @@ unsigned long get_average_time_l1()
 	return average;
 }
 
-//QUESTION: why does the ip get lost when when the "threshold" var is uncommented?
 int probe_main_mem(char* addr) {
-	//const float threshold = 0.42;
-
 	volatile unsigned long time;
 
 	asm __volatile__ (
@@ -65,8 +62,6 @@ int probe_main_mem(char* addr) {
 }
 
 int probe_l1(char* addr) {
-	//const float threshold = 0.42;
-
 	volatile unsigned long time;
 
 	asm __volatile__ (
@@ -84,4 +79,18 @@ int probe_l1(char* addr) {
 		: "%esi", "%edx");
 	
 	return time;
+}
+
+void flush(char* addr) {
+	asm __volatile__ (
+		"clflush 0(%0)" : : "r"(addr) : "rax"
+	);
+}
+
+int determine_threshold()
+{
+	int average_l1 = get_average_time_l1();
+	int average_main = get_average_time_main_mem();
+
+	return (average_main + average_l1) / 2;
 }

@@ -1,5 +1,5 @@
 #include "spectre.h"
-#include "../mm/mm.h"
+#include "../../mm/mm.h"
 
 uint8_t array[ARRAY_SIZE * 4096];
 uint8_t temp = 0; // Used so compiler won’t optimize out victim_function()
