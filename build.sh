@@ -4,9 +4,9 @@ ISO=kernel.iso
 MEM=8192M
 
 CC=gcc
-SHARED_FLAGS="-fno-builtin -nostdinc -nostdlib -ffreestanding -Wall -Wextra -I. -MMD -mno-red-zone -no-pie -fno-pie -mcmodel=large"
-OBJECTS="util.o vulns.o test.o pmm_test.o vmm_test.o pmm.o vmm.o mm.o front.o kernel.o boot.o spectre.o"
-DFILES="util.d vulns.d test.d pmm_test.d vmm_test.c pmm.d vmm.d mm.d front.d kernel.d boot.d spectre.d"
+SHARED_FLAGS="-fno-builtin -nostdinc -nostdlib -ffreestanding -Wall -Wextra -I. -MMD -mno-red-zone -no-pie -fno-pie -mcmodel=large -fno-stack-protector"
+OBJECTS="util.o test.o pmm_test.o vmm_test.o pmm.o vmm.o mm.o front.o kernel.o boot.o vulns.o spectre.o flush_reload.o"
+DFILES="util.d test.d pmm_test.d vmm_test.c pmm.d vmm.d mm.d front.d kernel.d boot.d vulns.d spectre.d flush_reload.d"
 
 usage()
 {
@@ -41,7 +41,8 @@ compile_debug()
     $CC $SHARED_FLAGS -O0 -ggdb -c -o pmm_test.o test/pmm/pmm_test.c
 	$CC $SHARED_FLAGS -O0 -ggdb -c -o vmm_test.o test/vmm/vmm_test.c
 	$CC $SHARED_FLAGS -O0 -ggdb -c -o vulns.o vulns/vulns.c
-	$CC $SHARED_FLAGS -O0 -ggdb -c -o spectre.o vulns/spectre.c
+	$CC $SHARED_FLAGS -O0 -ggdb -c -o spectre.o vulns/spectre/spectre.c
+	$CC $SHARED_FLAGS -O0 -ggdb -c -o flush_reload.o vulns/flush_reload/flush_reload.c
 	$CC $SHARED_FLAGS -O0 -ggdb -c -o util.o util/util.c
     
 	$CC $SHARED_FLAGS -O0 -ggdb -z -W1,--build-id=none -T core/kernel.ld -o kernel $OBJECTS
@@ -63,7 +64,8 @@ compile()
 	$CC $SHARED_FLAGS -O0 -c -o pmm_test.o test/pmm/pmm_test.c
 	$CC $SHARED_FLAGS -O0 -c -o vmm_test.o test/vmm/vmm_test.c
 	$CC $SHARED_FLAGS -O0 -c -o vulns.o vulns/vulns.c
-	$CC $SHARED_FLAGS -O0 -c -o spectre.o vulns/spectre.c
+	$CC $SHARED_FLAGS -O0 -c -o spectre.o vulns/spectre/spectre.c
+	$CC $SHARED_FLAGS -O0 -c -o flush_reload.o vulns/flush_reload/flush_reload.c
 	$CC $SHARED_FLAGS -O0 -c -o util.o util/util.c
     
 	$CC $SHARED_FLAGS -O0 -z -W1,--build-id=none -T core/kernel.ld -o kernel $OBJECTS
