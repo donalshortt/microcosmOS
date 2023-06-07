@@ -52,3 +52,15 @@ char* strcpy(const char* source, char* destination)
     // the destination is returned by standard `strcpy()`
     return ptr;
 }
+
+
+unsigned int strlen(const char *s)
+{
+    unsigned int count = 0;
+    while(*s!='\0')
+    {
+        count++;
+        s++;
+    }
+    return count;
+}

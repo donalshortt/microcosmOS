@@ -7,6 +7,7 @@
 #include "../test/test.h"
 #include "../vulns/vulns.h"
 #include "../vulns/flush_reload/flush_reload.h"
+#include "../vulns/spectre/spectre.h"
 
 int kernel_main(unsigned long boot_info_addr)
 {
@@ -24,6 +25,7 @@ int kernel_main(unsigned long boot_info_addr)
 	run_tests();
 
 	flush_reload();
+	spectre();
 
 	while(1);
     

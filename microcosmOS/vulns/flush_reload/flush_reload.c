@@ -5,9 +5,6 @@
 #include "../../util/util.h"
 #include "../../mm/mm.h"
 
-#define CACHE_HIT_THRESHOLD 80 /* Adjust this value to your cache hit/miss threshold */
-#define SECRET_ADDR (char*)0x1000000 /* The address of the secret string */
-
 void flush_reload()
 {
 	int cache_threshold = determine_threshold();

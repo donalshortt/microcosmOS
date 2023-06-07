@@ -7,4 +7,6 @@
 #define ARRAY_SIZE 256
 #define DELTA 1024
 
+void spectre();
+
 #endif

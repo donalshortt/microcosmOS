@@ -9,6 +9,7 @@ int probe_main_mem(char* addr);
 int probe_l1(char* addr);
 
 void flush(char* addr);
+unsigned int read_timestamp();
 
 int determine_threshold();
 

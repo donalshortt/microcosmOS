@@ -3,5 +3,6 @@
 
 void itoa(int num, char* str);
 char* strcpy(char* destination, const char* source);
+unsigned int strlen(const char *s);
 
 #endif

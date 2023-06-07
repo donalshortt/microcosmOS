@@ -1,6 +1,7 @@
 #include "../front/front.h"
 #include "../util/util.h"
 #include "../vulns/vulns.h"
+#include "../util/types.h"
 
 unsigned long get_average_time_main_mem()
 {	
@@ -81,10 +82,34 @@ int probe_l1(char* addr) {
 	return time;
 }
 
-void flush(char* addr) {
+void flush(char* addr)
+{
 	asm __volatile__ (
-		"clflush 0(%0)" : : "r"(addr) : "rax"
+		"clflush 0(%0)" 
+		: 
+		: "r"(addr) 
+		: "rax"
 	);
+}
+
+unsigned int read_timestamp()
+{
+	int time;
+	asm __volatile__ (	
+		" mfence \n"
+		" lfence \n"
+		" rdtsc \n"
+		: "=a" (time)
+		:
+		: "%edx");
+
+    /*uint32_t high, low;
+    asm __volatile__ ("rdtscp" 
+			: "=a"(low), "=d"(high) 
+			:
+			: "%rcx"
+	);
+	return ((uint64_t)high << 32) | low;*/
 }
 
 int determine_threshold()
