@@ -5,7 +5,8 @@ set confirm off
 source /home/donal/repos/gdb-pt-dump/pt.py
 
 #br vulns/flush_reloead/flush_reload.c:48
-br vulns/spectre/spectre.c:128
+br vulns/spectre/spectre.c:132
+
 
 #br vulns/vulns.c:10
 

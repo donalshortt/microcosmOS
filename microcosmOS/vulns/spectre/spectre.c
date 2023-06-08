@@ -13,7 +13,7 @@ uint8_t array1[160] = {1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16};
 uint8_t unused2[64];
 uint8_t array2[256 * 512];
 
-char* secret = "the secret word is: spaghetti";
+char* secret = "the secret word is: spaghetti\0";
 
 uint8_t temp = 0; /* Used so compiler won't optimize out victim_function() */
 
