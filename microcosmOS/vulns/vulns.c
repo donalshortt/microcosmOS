@@ -103,13 +103,7 @@ unsigned int read_timestamp()
 		:
 		: "%edx");
 
-    /*uint32_t high, low;
-    asm __volatile__ ("rdtscp" 
-			: "=a"(low), "=d"(high) 
-			:
-			: "%rcx"
-	);
-	return ((uint64_t)high << 32) | low;*/
+	return time;
 }
 
 int determine_threshold()

