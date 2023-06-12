@@ -1,0 +1,54 @@
+This is BibTeX, Version 0.99d (TeX Live 2023/Arch Linux)
+Capacity: max_strings=200000, hash_size=200000, hash_prime=170003
+The top-level auxiliary file: thesis.aux
+The style file: ACM-Reference-Format.bst
+Reallocated singl_function (elt_size=8) to 100 items from 50.
+Reallocated singl_function (elt_size=8) to 100 items from 50.
+Reallocated wiz_functions (elt_size=8) to 6000 items from 3000.
+Database file #1: references.bib
+Reallocated singl_function (elt_size=8) to 100 items from 50.
+Reallocated glb_str_ptr (elt_size=8) to 20 items from 10.
+Reallocated global_strs (elt_size=200001) to 20 items from 10.
+Reallocated glb_str_end (elt_size=8) to 20 items from 10.
+Reallocated singl_function (elt_size=8) to 100 items from 50.
+You've used 1 entry,
+            5959 wiz_defined-function locations,
+            1336 strings with 14764 characters,
+and the built_in function-call counts, 1236 in all, are:
+= -- 189
+> -- 20
+< -- 0
++ -- 5
+- -- 8
+* -- 65
+:= -- 114
+add.period$ -- 5
+call.type$ -- 1
+change.case$ -- 5
+chr.to.int$ -- 1
+cite$ -- 1
+duplicate$ -- 102
+empty$ -- 73
+format.name$ -- 8
+if$ -- 306
+int.to.chr$ -- 2
+int.to.str$ -- 1
+missing$ -- 4
+newline$ -- 48
+num.names$ -- 8
+pop$ -- 33
+preamble$ -- 1
+purify$ -- 14
+quote$ -- 0
+skip$ -- 33
+stack$ -- 0
+substring$ -- 95
+swap$ -- 11
+text.length$ -- 0
+text.prefix$ -- 0
+top$ -- 0
+type$ -- 16
+warning$ -- 0
+while$ -- 11
+width$ -- 0
+write$ -- 56
