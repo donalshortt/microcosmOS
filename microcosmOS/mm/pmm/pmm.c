@@ -221,7 +221,7 @@ void pmm_dealloc_block(uintptr_t ptr)
     uintptr_t index =  ptr / BLOCK_SIZE;
     bit_unset(pmm_state->pmmap, index);
 
-    pmm_state->used_blocks++;
+    pmm_state->used_blocks--;
 }
 
 void setup_pmm(unsigned long boot_info_addr)
