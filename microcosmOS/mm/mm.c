@@ -51,7 +51,7 @@ uintptr_t get_heap_end()
 	return current_block->data + current_block->size;
 }
 
-//TODO: clean up this function jesuuuuuuuus
+//TODO: clean up this function 
 void* kmalloc(int size)
 {
 	int no_blocks = size / BLOCK_SIZE;

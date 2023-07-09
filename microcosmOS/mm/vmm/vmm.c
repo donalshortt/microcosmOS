@@ -5,43 +5,12 @@ uint64_t pe_set_flag(pe pe, uint64_t flag) { return pe |= flag; };
 uint64_t pe_del_flag(pe pe, uint64_t flag) { return pe &= ~flag; };
 uint64_t pe_set_addr(pe pe, uint64_t addr) { return pe |= addr; };
 
-//TODO: Standardise return codes!
-/*int vmm_alloc_page(pte* pte)
-{
-    uintptr_t page_addr = pmm_alloc_block();
-
-    if(!page_addr) {
-        //TODO: Error
-        return 1;
-    }
-
-    pe_set_flag(pte, PAGE_PRESENT);
-    pe_set_flag(pte, PAGE_WRITEABLE);
-    pe_set_addr(pte, page_addr);
-
-    return 0;
-}
-
-void vmm_dealloc_page(pe* pe)
-{
-    void* addr = (void*)(*pe & PAGE_ADDR);
-
-    if (!addr) {
-        //TODO: Error
-        return;
-    }
-
-    pmm_dealloc_block(addr);
-    pe_del_flag(pe, PAGE_PRESENT);
-}*/
-
 __attribute__((unused)) void vmm_set_CR3(__attribute__((unused)) uint64_t pml4)
 {
     __asm__ ( "movq [pml4], %rax" );
     __asm__ ( "movq %rax, %cr3" );
 }
 
-//TODO: Remove this shit
 struct PML4* CURRENT_PML4;
 
 __attribute__((unused)) int vmm_switch_pml4(struct PML4* pml4)

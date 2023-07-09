@@ -2,7 +2,6 @@
 #define CONSTANTS_H_
 
 // TYPES
-// TODO: Add the types!
 
 #define NULL 0
 

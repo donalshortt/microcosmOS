@@ -12,7 +12,6 @@
 int kernel_main(unsigned long boot_info_addr)
 {
     
-	//TODO: Remove this magic number
 	if (boot_info_addr & 7) {
 		print_string("Incorrect alignment for multiboot info", 0, VGA_RED);
 		goto panic;
